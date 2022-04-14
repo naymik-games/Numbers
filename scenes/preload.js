@@ -46,18 +46,18 @@ class preloadGame extends Phaser.Scene {
 
     assetText.setOrigin(0.5, 0.5);
 
-    this.load.on('progress', function(value) {
+    this.load.on('progress', function (value) {
       percentText.setText(parseInt(value * 100) + '%');
       progressBar.clear();
       progressBar.fillStyle(0xffffff, 1);
       progressBar.fillRect(250, 280, 300 * value, 30);
     });
 
-    this.load.on('fileprogress', function(file) {
+    this.load.on('fileprogress', function (file) {
       assetText.setText('Loading asset: ' + file.key);
     });
 
-    this.load.on('complete', function() {
+    this.load.on('complete', function () {
       progressBar.destroy();
       progressBox.destroy();
       loadingText.destroy();
@@ -96,7 +96,7 @@ class preloadGame extends Phaser.Scene {
       frameWidth: 200,
       frameHeight: 200
     });
-    this.load.spritesheet("tiles2", "assets/sprites/2048_tiles.png", {
+    this.load.spritesheet("tiles2", "assets/sprites/2048_tiles_dark.png", {
       frameWidth: 200,
       frameHeight: 200
     });

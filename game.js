@@ -2,7 +2,7 @@ let game;
 
 
 
-window.onload = function() {
+window.onload = function () {
   let gameConfig = {
     type: Phaser.AUTO,
     scale: {
@@ -13,7 +13,7 @@ window.onload = function() {
       height: 1640
     },
 
-    scene: [preloadGame, startGame, playGame, plusPlus, play2048, zNumbers, nonogram, nonoOptions, tenPair, mineSweeper, minesweeperOptions, twoFourEight, fuseTen, gridPlus, numberRPG, UI]
+    scene: [preloadGame, startGame, playGame, plusPlus, play2048, zNumbers, nonogram, nonoOptions, tenPair, mineSweeper, minesweeperOptions, twoFourEight, fuseTen, gridPlus, help, UI]
   }
   game = new Phaser.Game(gameConfig);
   window.focus();
@@ -32,23 +32,23 @@ class playGame extends Phaser.Scene {
 
   }
   create() {
-    
+
 
     this.cameras.main.setBackgroundColor(0x000000);
 
-    this.player = this.add.image(game.config.width / 2, game.config.height /2, 'gems', 0).setInteractive();
+    this.player = this.add.image(game.config.width / 2, game.config.height / 2, 'gems', 0).setInteractive();
     this.player.on("pointerdown", this.addScore, this);
-    
-   /* this.input.on("pointerdown", this.gemSelect, this);
-    this.input.on("pointermove", this.drawPath, this);
-    this.input.on("pointerup", this.removeGems, this);
-   */
+
+    /* this.input.on("pointerdown", this.gemSelect, this);
+     this.input.on("pointermove", this.drawPath, this);
+     this.input.on("pointerup", this.removeGems, this);
+    */
     //this.check = this.add.image(725, 1000, 'check').setScale(.7);
   }
   update() {
-   
+
   }
-  addScore(){
-	  this.events.emit('score');
+  addScore() {
+    this.events.emit('score');
   }
 }

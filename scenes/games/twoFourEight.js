@@ -7,7 +7,7 @@ let gameOptions248 = {
   fallSpeed: 100,
   destroySpeed: 200,
   diagonal: false,
-  
+
   boardOffset: {
     x: 40,
     y: 370
@@ -25,13 +25,13 @@ class twoFourEight extends Phaser.Scene {
 
   }
   create() {
-    //this.cameras.main.setBackgroundColor(0x000000);
-    this.cameras.main.setBackgroundColor(0xf0e0d1);
-    
+    this.cameras.main.setBackgroundColor(0x000000);
+    //this.cameras.main.setBackgroundColor(0xf0e0d1);
+
     gameOptions248.gemSize = (game.config.width - 80) / gameOptions248.cols;
     //this.colors = [0xa8324e, 0x32a85a, 0x326ba8, 0xa86432, 0xa232a8, 0xa8324e, 0x32a85a, 0x326ba8, 0xa86432, 0xa232a8, 0xa8324e, 0x32a85a, 0x326ba8, 0xa86432, 0xa232a8, 0xa8324e, 0x32a85a, 0x326ba8, 0xa86432, 0xa232a8]
-this.numbers = [2, 2, 2, 4, 4, 4, 8, 8];
-this.addNumbers = [128,64,32,16];
+    this.numbers = [2, 2, 2, 4, 4, 4, 8, 8];
+    this.addNumbers = [128, 64, 32, 16];
     this.bg = this.add.image(20, gameOptions248.boardOffset.y - 20, 'blank').setOrigin(0).setTint(0xbbada0);
     this.bg.displayWidth = game.config.width - 40;
     this.bg.displayHeight = (gameOptions248.gemSize * gameOptions248.rows) + 40;
@@ -59,13 +59,13 @@ this.addNumbers = [128,64,32,16];
     this.currentLevelTile = this.add.sprite(150, 150, "circle").setTint(this.colors[this.level]).setDepth(1);
     this.currentLevelTile.displayWidth = 100;
     this.currentLevelTile.displayHeight = 100;
-    this.currentLevelText = this.add.bitmapText(this.currentLevelTile.x, this.currentLevelTile.y, 'topaz', this.level,80).setOrigin(.5).setTint(0x000000).setDepth(2);
-    
+    this.currentLevelText = this.add.bitmapText(this.currentLevelTile.x, this.currentLevelTile.y, 'topaz', this.level, 80).setOrigin(.5).setTint(0x000000).setDepth(2);
+
     this.nextLevelTile = this.add.sprite(game.config.width - 150, 150, "circle").setTint(this.colors[this.nextLevel]).setDepth(1);
     this.nextLevelTile.displayWidth = 150;
     this.nextLevelTile.displayHeight = 150;
     this.nextLevelText = this.add.bitmapText(this.nextLevelTile.x, this.nextLevelTile.y, 'topaz', this.nextLevel, 100).setOrigin(.5).setTint(0x000000).setDepth(2);
-    
+
     this.levelBarWidth = (this.nextLevelTile.x - this.currentLevelTile.x) - 80;
     this.levelBarBack = this.add.image(this.currentLevelTile.x + 40, this.currentLevelTile.y, 'blank').setOrigin(0, .5).setTint(0xbbada0);
     this.levelBarBack.displayWidth = this.levelBarWidth;
@@ -85,7 +85,7 @@ this.addNumbers = [128,64,32,16];
     this.button1 = this.add.sprite(100, 1450, "circle").setTint(this.colors[8]).setDepth(1).setInteractive();
     this.button1.displayWidth = 150;
     this.button1.displayHeight = 150;
-    this.button1.on('pointerdown', function(){
+    this.button1.on('pointerdown', function () {
       this.cameras.main.setBackgroundColor(this.colors[9]);
       this.button1Flag = true;
     }, this)
@@ -93,37 +93,37 @@ this.addNumbers = [128,64,32,16];
     this.button2 = this.add.sprite(450, 1450, "circle").setTint(this.colors[7]).setDepth(1).setInteractive();
     this.button2.displayWidth = 150;
     this.button2.displayHeight = 150;
-    this.button2.on('pointerdown', function(){
+    this.button2.on('pointerdown', function () {
       this.cameras.main.setBackgroundColor(this.colors[11]);
-      
+
     }, this)
-    
+
     this.input.on("pointerdown", this.gemSelect, this);
     this.input.on("pointermove", this.drawPath, this);
     this.input.on("pointerup", this.removeGems, this);
   }
-  
-  scoreUpdate(){
-   
+
+  scoreUpdate() {
+
     this.scoreText.setText(score)
     this.levelBarProgress.displayWidth = this.levelBarWidth * (tempScore / this.scoreGoal)
-    if(tempScore >= this.scoreGoal){
-       // this.scoreGoal += 500;
-       
-        this.level++;
-        this.nextLevel++;
-        tempScore = 0;
-        if(this.level % 4 == 0){
-          var temp = this.addNumbers.pop();
-          this.numbers.push(temp)
-        }
-        this.levelBarProgress.displayWidth = this.levelBarWidth * (tempScore / this.scoreGoal)
-        this.levelBarProgress.setTint(this.colors[this.level])
-        this.nextLevelText.setText(this.nextLevel);
-        this.currentLevelText.setText(this.level);
-        this.currentLevelTile.setTint(this.colors[this.level])
-        this.nextLevelTile.setTint(this.colors[this.nextLevel])
-        this.damageEmit(this.currentLevelText.x, this.currentLevelText.y, this.colors[this.Level])
+    if (tempScore >= this.scoreGoal) {
+      // this.scoreGoal += 500;
+
+      this.level++;
+      this.nextLevel++;
+      tempScore = 0;
+      if (this.level % 4 == 0) {
+        var temp = this.addNumbers.pop();
+        this.numbers.push(temp)
+      }
+      this.levelBarProgress.displayWidth = this.levelBarWidth * (tempScore / this.scoreGoal)
+      this.levelBarProgress.setTint(this.colors[this.level])
+      this.nextLevelText.setText(this.nextLevel);
+      this.currentLevelText.setText(this.level);
+      this.currentLevelTile.setTint(this.colors[this.level])
+      this.nextLevelTile.setTint(this.colors[this.nextLevel])
+      this.damageEmit(this.currentLevelText.x, this.currentLevelText.y, this.colors[this.Level])
     }
   }
   getColor(value) {
@@ -191,16 +191,16 @@ this.addNumbers = [128,64,32,16];
     }
   }
   gemSelect(pointer) {
-    
+
     if (this.canPick) {
       let row = Math.floor((pointer.y - gameOptions248.boardOffset.y) / gameOptions248.gemSize);
       let col = Math.floor((pointer.x - gameOptions248.boardOffset.x) / gameOptions248.gemSize);
       if (this.draw3.validPick(row, col)) {
-        if(this.button1Flag){
+        if (this.button1Flag) {
           this.removeValue(this.draw3.valueAt(row, col));
           this.button1Flag = false;
           this.cameras.main.setBackgroundColor(0xf0e0d1);
-    
+
         }
         this.canPick = false;
         this.draw3.putInChain(row, col)
@@ -243,7 +243,7 @@ this.addNumbers = [128,64,32,16];
       this.dragging = false;
       if (this.draw3.getChainLength() < 2) {
         let chain = this.draw3.emptyChain();
-        chain.forEach(function(item) {
+        chain.forEach(function (item) {
           this.draw3.customDataOf(item.row, item.column).alpha = 1;
         }.bind(this));
         this.canPick = true;
@@ -252,19 +252,19 @@ this.addNumbers = [128,64,32,16];
         let last = this.draw3.doMerge();
         var tile = this.draw3.customDataOf(last.row, last.column)
         tile.setTint(this.getColor(this.draw3.valueAt(last.row, last.column)))
-       
+
         this.damageEmit(tile.x, tile.y, this.getColor(this.draw3.valueAt(last.row, last.column)))
         var tween = this.tweens.add({
           targets: tile,
           scale: 2,
           duration: 100,
           yoyo: true,
-          
+
         })
         let gemsToRemove = this.draw3.destroyChain();
         let destroyed = 0;
         this.scoreUpdate();
-        gemsToRemove.forEach(function(gem) {
+        gemsToRemove.forEach(function (gem) {
           this.poolArray.push(this.draw3.customDataOf(gem.row, gem.column))
           destroyed++;
           this.tweens.add({
@@ -272,7 +272,7 @@ this.addNumbers = [128,64,32,16];
             alpha: 0,
             duration: gameOptions248.destroySpeed,
             callbackScope: this,
-            onComplete: function(event, sprite) {
+            onComplete: function (event, sprite) {
               destroyed--;
               if (destroyed == 0) {
                 this.makeGemsFall();
@@ -286,14 +286,14 @@ this.addNumbers = [128,64,32,16];
   makeGemsFall() {
     let moved = 0;
     let fallingMovements = this.draw3.arrangeBoardAfterChain();
-    fallingMovements.forEach(function(movement) {
+    fallingMovements.forEach(function (movement) {
       moved++;
       this.tweens.add({
         targets: [this.draw3.customDataOf(movement.row, movement.column), this.draw3.customDataOf(movement.row, movement.column).text],
         y: this.draw3.customDataOf(movement.row, movement.column).y + movement.deltaRow * gameOptions248.gemSize,
         duration: gameOptions248.fallSpeed * Math.abs(movement.deltaRow),
         callbackScope: this,
-        onComplete: function() {
+        onComplete: function () {
           moved--;
           if (moved == 0) {
             this.canPick = true;
@@ -302,7 +302,7 @@ this.addNumbers = [128,64,32,16];
       })
     }.bind(this));
     let replenishMovements = this.draw3.replenishBoard(this.numbers);
-    replenishMovements.forEach(function(movement) {
+    replenishMovements.forEach(function (movement) {
       moved++;
       let sprite = this.poolArray.pop();
       sprite.alpha = 1;
@@ -319,7 +319,7 @@ this.addNumbers = [128,64,32,16];
         y: gameOptions248.boardOffset.y + gameOptions248.gemSize * movement.row + gameOptions248.gemSize / 2,
         duration: gameOptions248.fallSpeed * movement.deltaRow,
         callbackScope: this,
-        onComplete: function() {
+        onComplete: function () {
           moved--;
           if (moved == 0) {
             if (this.draw3.stillPlayable(2)) {
@@ -338,7 +338,7 @@ this.addNumbers = [128,64,32,16];
   }
   displayPath() {
     let path = this.draw3.getPath();
-    path.forEach(function(item) {
+    path.forEach(function (item) {
       this.arrowArray[item.row][item.column].visible = true;
       this.arrowArray[item.row][item.column].setTint(this.getColor(this.draw3.getChainValue()))
       if (!this.draw3.isDiagonal(item.direction)) {
@@ -352,65 +352,65 @@ this.addNumbers = [128,64,32,16];
     }.bind(this))
   }
   hidePath() {
-    this.arrowArray.forEach(function(item) {
-      item.forEach(function(subItem) {
+    this.arrowArray.forEach(function (item) {
+      item.forEach(function (subItem) {
         subItem.visible = false;
         subItem.angle = 0;
       })
     })
   }
-  
+
   removeValue(value) {
     let result = []
     for (let i = this.draw3.getRows() - 2; i >= 0; i--) {
       for (let j = 0; j < this.draw3.getColumns(); j++) {
-        if(this.draw3.valueAt(i, j) == value){
+        if (this.draw3.valueAt(i, j) == value) {
           this.draw3.putInChain(i, j)
         }
-        
+
       }
     }
     this.removeGems();
   }
-saveGame(){
-    
+  saveGame() {
+
     var saveGrid = [];
     for (var i = 0; i < 5; i++) {
       saveGrid[i] = [];
       for (var j = 0; j < 5; j++) {
-        
+
         saveGrid[i][j] = {
           value: this.grid[i][j].tileValue,
           upgrade: this.grid[i][j].canUpgrade
         }
       }
     }
-    
-   /* let default248GameData = {
-	score: 0,
-	level: 0,
-	rows: 5,
-    cols: 5,
-	numbers: [2, 2, 2, 4, 4, 4, 8, 8],
-	grid: null,
-}*/
+
+    /* let default248GameData = {
+   score: 0,
+   level: 0,
+   rows: 5,
+     cols: 5,
+   numbers: [2, 2, 2, 4, 4, 4, 8, 8],
+   grid: null,
+ }*/
     gridGameData.score = this.score;
     gridGameData.numbers = this.numbers;
     gridGameData.level = this.level;
     gridGameData.rows = 5,
-	gridGameData.cols = 5,
-    gridGameData.grid = saveGrid;
+      gridGameData.cols = 5,
+      gridGameData.grid = saveGrid;
     this.saveSettings();
-    
+
   }
   saveSettings() {
-localStorage.setItem('gridData', JSON.stringify(gridGameData));
+    localStorage.setItem('gridData', JSON.stringify(gridGameData));
     localStorage.setItem('numbersData', JSON.stringify(gameData));
 
   }
 
 
-  blow(x, y){
+  blow(x, y) {
     var particles = this.add.particles('circle');
     var emitter = particles.createEmitter({
       speed: {
@@ -426,18 +426,18 @@ localStorage.setItem('gridData', JSON.stringify(gridGameData));
         end: 0
       },
       lifespan: 1000
-      
+
     });
-    emitter.explode(20,x,y)
+    emitter.explode(20, x, y)
   }
-  
+
   damageEmit(objX, objY, tint) {
     var particlesColor = this.add.particles("circle");
     //.setTint(0x7d1414);
     var emitter = particlesColor.createEmitter({
       // particle speed - particles do not move
       // speed: 1000,
-     // frame: { frames: [0, 1, 2, 3], cycle: true },
+      // frame: { frames: [0, 1, 2, 3], cycle: true },
 
       speed: {
         min: 200,
@@ -464,9 +464,9 @@ localStorage.setItem('gridData', JSON.stringify(gridGameData));
     emitter.explode(15, objX, objY);
 
   }
-  
-  
-  
+
+
+
 }
 
 class Draw3 {
@@ -633,7 +633,7 @@ class Draw3 {
   // clears the chain and returns the items
   emptyChain() {
     let result = [];
-    this.chain.forEach(function(item) {
+    this.chain.forEach(function (item) {
       result.push(item);
     })
     this.chain = [];
@@ -647,7 +647,7 @@ class Draw3 {
     //this.removeLastChainItem()
 
 
-    this.chain.forEach(function(item) {
+    this.chain.forEach(function (item) {
       result.push(item);
       this.setEmpty(item.row, item.column)
     }.bind(this))
@@ -683,17 +683,17 @@ class Draw3 {
     this.gameArray[row][column] = Object.assign(this.gameArray[row2][column2]);
     this.gameArray[row2][column2] = Object.assign(tempObject);
     return [{
-        row: row,
-        column: column,
-        deltaRow: row - row2,
-        deltaColumn: column - column2
-        },
-      {
-        row: row2,
-        column: column2,
-        deltaRow: row2 - row,
-        deltaColumn: column2 - column
-        }]
+      row: row,
+      column: column,
+      deltaRow: row - row2,
+      deltaColumn: column - column2
+    },
+    {
+      row: row2,
+      column: column2,
+      deltaRow: row2 - row,
+      deltaColumn: column2 - column
+    }]
   }
 
   // set the item at (row, column) as empty
@@ -813,7 +813,7 @@ class Draw3 {
   // removes all connected items starting at (row, column)
   removeConnectedItems(row, column) {
     let items = this.listConnectedItems(row, column);
-    items.forEach(function(item) {
+    items.forEach(function (item) {
       this.gameArray[item.row][item.column].isEmpty = true;
     }.bind(this))
   }
@@ -865,7 +865,7 @@ class Draw3 {
 
     let found = false;
 
-    this.floodFillArray.forEach(function(item) {
+    this.floodFillArray.forEach(function (item) {
       if (item.row == row && item.column == column) {
         found = true;
       }

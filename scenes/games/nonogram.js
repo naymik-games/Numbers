@@ -22,9 +22,11 @@ class nonogram extends Phaser.Scene {
 
   }
   create() {
-    this.numRows = nonoLevel.rows
-    this.numCols = nonoLevel.cols;
-    
+    //this.numRows = nonoLevel.rows
+    //this.numCols = nonoLevel.cols;
+    //7x7, 7x9, 8x8, 8x10
+    this.numRows = 12
+    this.numCols = 8;
     this.cameras.main.fadeIn(800, 0, 0, 0);
     this.cameras.main.setBackgroundColor(0x000000);
     var title = this.add.bitmapText(game.config.width / 2, 50, 'topaz', 'Nonogram', 100).setOrigin(.5).setTint(0xc76210);
@@ -33,30 +35,30 @@ class nonogram extends Phaser.Scene {
 
     this.xOffset = 50;
     this.yOffset = 425;
-    if(this.numCols > 12){
+    if (this.numCols > 12) {
       //max 16 max row 20
       this.tileSize = 35;
       this.hintSize = 40
-    } else if(this.numCols > 8){
+    } else if (this.numCols > 8) {
       //max 12
       this.tileSize = 50;
       this.hintSize = 50
-    }  else {
+    } else {
       // max 8
       this.tileSize = 75;
       this.hintSize = 60
     }
     this.tileSize = (game.config.width - 300) / this.numCols
-    
+
     this.tileSpacing = 5;
     this.hHints = [];
     this.vHints = [];
     this.start(nonoLevel.diff);
     this.makeGame();
     this.setUpHints();
-    var solve = this.add.bitmapText(game.config.width / 2, 1400, 'topaz', 'Solve', 100).setOrigin(.5).setTint(0xc76210).setInteractive();
+    var solve = this.add.bitmapText(game.config.width / 2, 1475, 'topaz', 'Solve', 100).setOrigin(.5).setTint(0xc76210).setInteractive();
     solve.on('pointerdown', this.solve, this)
-   // this.solve()
+    // this.solve()
     this.input.on('pointerdown', this.pickTile, this);
   }
   pickTile(e) {
@@ -101,8 +103,8 @@ class nonogram extends Phaser.Scene {
         this.start(DEFAULT_DIFFICULTY);
         break;
     }
-console.log(difficulty)
-    
+    console.log(difficulty)
+
     //this.setHintsH();
     //this.setHintsV();
     //reset();
@@ -110,14 +112,14 @@ console.log(difficulty)
   makeGame() {
     for (let i = 0; i < this.numRows; i++) {
       board[i] = [];
-      
+
       for (let j = 0; j < this.numCols; j++) {
         var tile = this.add.sprite(this.tileDestination(j, 'r'), this.tileDestination(i, 'c'), 'blank');
-       var hintTextH = this.add.bitmapText(this.tileDestination(this.numCols, 'r'), this.tileDestination(i, 'c'), 'topaz', '', this.hintSize).setOrigin(0,.5).setTint(0xc76210);
-       var hintTextV = this.add.bitmapText(this.tileDestination(j, 'r'), this.tileDestination(-1, 'c'), 'topaz', '', this.hintSize).setOrigin(.5,1).setTint(0xc76210).setAngle(0);
+        var hintTextH = this.add.bitmapText(this.tileDestination(this.numCols, 'r'), this.tileDestination(i, 'c'), 'topaz', '', this.hintSize).setOrigin(0, .5).setTint(0xc76210);
+        var hintTextV = this.add.bitmapText(this.tileDestination(j, 'r'), this.tileDestination(-1, 'c'), 'topaz', '', this.hintSize).setOrigin(.5, 1).setTint(0xc76210).setAngle(0);
 
-          this.hHints[i] = hintTextH;
-          this.vHints[j] = hintTextV;
+        this.hHints[i] = hintTextH;
+        this.vHints[j] = hintTextV;
         tile.displayWidth = this.tileSize;
         tile.displayHeight = this.tileSize;
         board[i][j] = {
@@ -125,44 +127,44 @@ console.log(difficulty)
           isSpot: Math.random() >= 1 - (this.percentSpots / 100),
           tile: tile
         }
-        
+
       }
     }
   }
-  setUpHints(){
+  setUpHints() {
     var hHints = this.setHintsH();
-  
-    for(var i = 0; i < this.numRows; i++){
-     var text = ''
-      for(var j = 0; j < hHints[i].length;j++){
+
+    for (var i = 0; i < this.numRows; i++) {
+      var text = ''
+      for (var j = 0; j < hHints[i].length; j++) {
         text += hHints[i][j] + ' ';
-        
+
       }
       this.hHints[i].setText(text)
-     
-     // console.log(JSON.stringify(hHints[i]))
+
+      // console.log(JSON.stringify(hHints[i]))
     }
     //console.log(text)
-    
+
     var vHints = this.setHintsV();
-    
+
     for (var i = 0; i < this.numCols; i++) {
       var text = ''
       for (var j = 0; j < vHints[i].length; j++) {
         text += vHints[i][j] + '\n';
-    
+
       }
       this.vHints[i].setText(text)
-    
+
       // console.log(JSON.stringify(hHints[i]))
     }
-    
-    
-    
+
+
+
   }
   setHintsH() {
     var filledTiles = [];
-  
+
     for (var i = 0; i < board.length; i++) {
       var counts = [];
       var count = 0;
@@ -179,15 +181,15 @@ console.log(difficulty)
       }
       filledTiles.push(counts);
     }
-  console.log('l ' + filledTiles.length)
+    console.log('l ' + filledTiles.length)
     return filledTiles;
     //console.log(JSON.stringify(filledTiles))
   }
   setHintsV() {
     var filledTiles = [];
-  
+
     var grid = this.transpose(board);
-  
+
     for (var i = 0; i < grid.length; i++) {
       var counts = [];
       var count = 0;
@@ -204,12 +206,12 @@ console.log(difficulty)
       }
       filledTiles.push(counts);
     }
-  
+
     return filledTiles;
     //console.log(JSON.stringify(filledTiles))
   }
-  
-  
+
+
   transpose(matrix) {
     var grid = [];
     for (var i = 0; i < matrix[0].length; i++) {
@@ -221,7 +223,7 @@ console.log(difficulty)
     }
     return grid;
   }
-  
+
   setHints__() {
     // horizontal
     var horizontal = [];
@@ -243,15 +245,15 @@ console.log(difficulty)
         row.push(count);
       }
 
-      
+
       row.forEach(num => {
-    console.log('row' + i + ' hint ' + num)
-     
+        console.log('row' + i + ' hint ' + num)
+
       });
 
-   
+
     }
-    
+
   }
   solve() {
     for (let i = 1; i < this.numRows + 1; i++) {
@@ -285,27 +287,29 @@ console.log(difficulty)
   }
   checkForWin() {
 
-        for (let i = 1; i < this.numRows + 1; i++) {
+    for (let i = 1; i < this.numRows + 1; i++) {
 
-            for (let j = 1; j < this.numCols + 1; j++) {
-               // let tableCell = tableCells[i][j];
-                let cell = board[i - 1][j - 1];
-                if ((cell.isSpot && cell.selectedState !== STATE_SELECTED) ||
-                    (!cell.isSpot && cell.selectedState === STATE_SELECTED)) {
-                    return;
-                }
-            }
+      for (let j = 1; j < this.numCols + 1; j++) {
+        // let tableCell = tableCells[i][j];
+        let cell = board[i - 1][j - 1];
+        if ((cell.isSpot && cell.selectedState !== STATE_SELECTED) ||
+          (!cell.isSpot && cell.selectedState === STATE_SELECTED)) {
+          return;
         }
-
-        // give enough time for css of last cell to update
-        //setTimeout(() => alert('You win!'), 50);
-       this.time.addEvent({delay:1000,callback: function(){
-         alert("You Win");
-        this.solve()
-       }, callbackScope: this, loop: false})
-       
-        
+      }
     }
+
+    // give enough time for css of last cell to update
+    //setTimeout(() => alert('You win!'), 50);
+    this.time.addEvent({
+      delay: 1000, callback: function () {
+        alert("You Win");
+        this.solve()
+      }, callbackScope: this, loop: false
+    })
+
+
+  }
   tileDestination(pos, dir) {
     if (dir == 'r') {
       return this.xOffset + pos * (this.tileSize + this.tileSpacing) + this.tileSize / 2 + this.tileSpacing
