@@ -1,0 +1,25 @@
+Converting 2D co-ordinates into 1D index
+Once your have your array, converting a 2D co-ordinate such as 3, 4 into the correct index of your 1D array using row-major order using the following formula:
+
+y * width + x
+Converting 1D index into 2D co-ordinates 03
+The calculation to convert a 1D index into a 2D co-ordinate is fairly straightforward:
+0,0 0,1 0,2 0,3
+1,0 1,1 1,2 1,3
+2,0 2,1 2,2 2,3
+2,3
+From 2D to 1D:
+
+index = c + (r * width) = 11
+or2,6
+
+depending on whether you read from left to right or top to bottom.
+
+From 1D to 2D:
+11
+c = index % width
+r = index / width 
+or
+
+x = index / height
+y = index % height
