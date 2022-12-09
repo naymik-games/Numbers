@@ -1,4 +1,4 @@
-const defaultSetting = 'advanced';
+const defaultSetting = 'intermediate';
 const defaultSize = 'medium';
 const msSettings = {
   'beginner': {
@@ -8,21 +8,21 @@ const msSettings = {
     'textOffset': 'small'
   },
   'intermediate': {
-    'gridWidth': 16,
-    'gridHeight': 16,
+    'gridWidth': 14,
+    'gridHeight': 18,
     'maxMines': 40,
     'textOffset': 'medium'
   },
   'advanced': {
-    'gridWidth': 20,
-    'gridHeight': 24,
+    'gridWidth': 18,
+    'gridHeight': 26,
     'maxMines': 99,
     'textOffset': 'large'
   }
 };
 const textOffsetSettings = {
   'small': {
-    'tileSize': 100,
+    'tileSize': 96,
     'hOffset': 6,
     'vOffset': -3,
     'hOffsetMine': 8,
@@ -33,7 +33,7 @@ const textOffsetSettings = {
     'vOffsetX': -3
   },
   'medium': {
-    'tileSize': 56,
+    'tileSize': 62,
     'hOffset': 8,
     'vOffset': -4,
     'hOffsetMine': 11,
@@ -44,7 +44,7 @@ const textOffsetSettings = {
     'vOffsetX': -4
   },
   'large': {
-    'tileSize': 45,
+    'tileSize': 48,
     'hOffset': 8,
     'vOffset': -4,
     'hOffsetMine': 11,
@@ -80,7 +80,7 @@ let gameOver = false;
 let timer = 0;
 
 let selectedTextSize = defaultSize;
-
+let mineMode = defaultSetting
 class mineSweeper extends Phaser.Scene {
   constructor() {
     super("mineSweeper");
@@ -91,7 +91,7 @@ class mineSweeper extends Phaser.Scene {
 
   }
   create() {
-
+    this.cameras.main.setBackgroundColor(0x272727);
     this.xOffset = 0;
 
     this.yOffset = 200;
@@ -112,18 +112,19 @@ class mineSweeper extends Phaser.Scene {
 
 
 
-    this.mines = this.add.bitmapText(225, 100, 'topaz', '0', 80).setOrigin(.5).setTint(0xc76210).setInteractive();
+    this.mines = this.add.bitmapText(225, 100, 'topaz', '0', 80).setOrigin(.5).setTint(0xfafafa).setInteractive();
 
     this.initialTime = 0;
-    this.timeText = this.add.bitmapText(675, 100, 'topaz', this.formatTime(this.initialTime), 80).setOrigin(.5).setTint(0xc76210);
+    this.timeText = this.add.bitmapText(675, 100, 'topaz', this.formatTime(this.initialTime), 80).setOrigin(.5).setTint(0xfafafa);
+    this.bestText = this.add.bitmapText(675, 160, 'topaz', this.secondsToHms(gameData.mineMediumTime), 50).setOrigin(.5).setTint(0xff0000);
 
+    //this.formatTime(gameData.mineMediumTime)
     //this.timeBestText = this.add.bitmapText(225, 150, 'topaz', bestTime, 40).setOrigin(0, .5).setTint(0xff0000);
     // Each 1000 ms call onEvent
     this.timedEvent = this.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, loop: true, paused: true });
 
     this.emoji = this.add.image(450, 100, 'emoji', 0).setScale(3.5)
-    this.graphics = this.add.graphics();
-    this.graphics.lineStyle(10, 0xffffff, 1)
+
 
     this.setDifficulty(defaultSetting)
 
@@ -155,7 +156,17 @@ class mineSweeper extends Phaser.Scene {
     // Returns formated time
     return `${minutes}:${partInSeconds}`;
   }
+  secondsToHms(d) {
+    d = Number(d);
+    var h = Math.floor(d / 3600);
+    var m = Math.floor(d % 3600 / 60);
+    var s = Math.floor(d % 3600 % 60);
 
+    var hDisplay = h > 0 ? h + ":" : "";
+    var mDisplay = m > 0 ? m + ":" : "";
+    var sDisplay = s
+    return hDisplay + mDisplay + sDisplay;
+  }
 
   onEvent() {
     this.initialTime += 1; // One second
@@ -173,13 +184,25 @@ class mineSweeper extends Phaser.Scene {
   }
   setDifficulty(difficulty) {
 
-
+    mineMode = difficulty
     gridWidth = msSettings[difficulty].gridWidth;
     gridHeight = msSettings[difficulty].gridHeight;
     maxMines = msSettings[difficulty].maxMines;
     totalTiles = gridWidth * gridHeight;
 
     this.setTextOffsets(msSettings[difficulty].textOffset);
+
+    if (mineMode == 'easy') {
+      this.bestText.setText(this.formatTime(gameData.mineEasyTime))
+
+    } else if (mineMode == 'intermediate') {
+      this.bestText.setText(this.formatTime(gameData.mineMediumTime))
+
+    } else {
+      this.bestText.setText(this.formatTime(gameData.mineHardTime))
+
+    }
+
   }
   resetGame() {
     this.initialTime = 0
@@ -206,6 +229,7 @@ class mineSweeper extends Phaser.Scene {
     maxGameMines = maxMines;
     tilesToClick = totalTiles - maxMines;
 
+    this.xOffset = (game.config.width - (gridWidth * tileSize)) / 2
 
     for (var row = 0; row < gridHeight; row++) {
       gridClicked[row] = []
@@ -230,9 +254,7 @@ class mineSweeper extends Phaser.Scene {
 
       }
     }
-    this.graphics.clear()
-    this.graphics.strokeRect(0, 200, 100, 100); // rect: {x, y, width, height}
-    // this.rectBack.setSize((gridWidth - 1) * tileSize + tileSize / 2, (gridHeight - 1) * tileSize + tileSize / 2)
+
 
 
   }
@@ -412,6 +434,28 @@ class mineSweeper extends Phaser.Scene {
         }
       }
     }
+
+    if (mineMode == 'easy') {
+      gameData.mineEasy++;
+      if (this.initialTime < gameData.mineEasyTime) {
+        gameData.mineEasyTime = this.initialTime
+      }
+
+    } else if (mineMode == 'intermediate') {
+      gameData.mineMedium++;
+      if (this.initialTime < gameData.mineMediumTime) {
+        gameData.mineMediumTime = this.initialTime
+      }
+    } else {
+      gameData.mineHard++;
+      if (this.initialTime < gameData.mineHardTime) {
+        gameData.mineHardTime = this.initialTime
+      }
+    }
+    this.saveSettings()
+
+
+
   }
 
   tileRightClick(pointer) {
@@ -450,6 +494,9 @@ class mineSweeper extends Phaser.Scene {
     }
 
 
+  }
+  saveSettings() {
+    localStorage.setItem('numbersData', JSON.stringify(gameData));
   }
 
 }

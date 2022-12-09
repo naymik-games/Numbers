@@ -97,6 +97,13 @@ class startGame extends Phaser.Scene {
     }, this);
 
 
+    var remove = this.add.bitmapText(game.config.width / 2, 1600, 'topaz', 'REMOVE DATA', 50).setOrigin(.5).setTint(0x000000).setInteractive();
+    remove.on('pointerdown', function () {
+      localStorage.removeItem('numbersData');
+      localStorage.setItem('numbersData',
+        JSON.stringify(defaultData));
+      gameData = defaultData;
+    }, this)
 
 
     /*this.testToast = new Toast({

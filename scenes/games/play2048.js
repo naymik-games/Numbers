@@ -31,21 +31,47 @@ class play2048 extends Phaser.Scene {
 
         this.fieldArray = [];
         this.fieldGroup = this.add.group();
-        for (var i = 0; i < twentyOptions.size.rows; i++) {
-            this.fieldArray[i] = [];
-            for (var j = 0; j < twentyOptions.size.cols; j++) {
-                var two = this.add.sprite(this.tileDestination(j), this.yOffset + this.tileDestination(i), "tiles2");
-                two.alpha = 0;
-                two.visible = 0;
-                this.fieldGroup.add(two);
-                this.fieldArray[i][j] = {
-                    tileValue: 0,
-                    tileSprite: two,
-                    canUpgrade: true
+        if (gameData.twentyBoard == null) {
+            for (var i = 0; i < twentyOptions.size.rows; i++) {
+                this.fieldArray[i] = [];
+                for (var j = 0; j < twentyOptions.size.cols; j++) {
+                    var two = this.add.sprite(this.tileDestination(j), this.yOffset + this.tileDestination(i), "tiles2");
+                    two.alpha = 0;
+                    two.visible = 0;
+                    this.fieldGroup.add(two);
+                    this.fieldArray[i][j] = {
+                        tileValue: 0,
+                        tileSprite: two,
+                        canUpgrade: true
+                    }
                 }
             }
+            this.score = 0
+        } else {
+            for (var i = 0; i < twentyOptions.size.rows; i++) {
+                this.fieldArray[i] = [];
+                for (var j = 0; j < twentyOptions.size.cols; j++) {
+                    var dat = gameData.twentyBoard[i][j]
+                    var two = this.add.sprite(this.tileDestination(j), this.yOffset + this.tileDestination(i), "tiles2", dat - 1);
+                    if (dat == 0) {
+                        two.alpha = 0;
+                        two.visible = 0;
+                    } else {
+                        two.alpha = 1;
+                        two.visible = 1;
+                    }
+
+                    //this.fieldGroup.add(two);
+                    this.fieldArray[i][j] = {
+                        tileValue: dat,
+                        tileSprite: two,
+                        canUpgrade: true
+                    }
+                }
+            }
+            this.score = gameData.twentyCurrentScore
         }
-        this.score = 0
+
         this.scoreText = this.add.bitmapText(50, 1250, 'topaz', this.score, 120).setOrigin(0, .5).setTint(0xffffff);
         this.scoreLabe = this.add.bitmapText(50, 1325, 'topaz', 'SCORE', 40).setOrigin(0, .5).setTint(0xc76210);
 
@@ -57,8 +83,10 @@ class play2048 extends Phaser.Scene {
 
         this.input.keyboard.on("keydown", this.handleKey, this);
         this.canMove = false;
-        this.addTwo();
-        this.addTwo();
+        if (gameData.twentyBoard == null) {
+            this.addTwo();
+            this.addTwo();
+        }
         this.input.on("pointerup", this.endSwipe, this);
     }
     update() {
@@ -115,6 +143,7 @@ class play2048 extends Phaser.Scene {
         this.fieldArray[chosenTile.row][chosenTile.col].tileValue = 1;
         this.fieldArray[chosenTile.row][chosenTile.col].tileSprite.visible = true;
         this.fieldArray[chosenTile.row][chosenTile.col].tileSprite.setFrame(0);
+        this.saveBoard()
         this.tweens.add({
             targets: [this.fieldArray[chosenTile.row][chosenTile.col].tileSprite],
             alpha: 1,
@@ -325,11 +354,25 @@ class play2048 extends Phaser.Scene {
         if (this.score > gameData.twentyHigh) {
             gameData.twentyHigh = this.score;
         }
+        gameData.twentyBoard = null
+        gameData.twentyCurrentScore = 0
         this.saveSettings();
         // ok, it's definitively game over :(
         alert("no more moves");
     }
+    saveBoard() {
+        var boardSave = []
+        for (var i = 0; i < twentyOptions.size.rows; i++) {
+            boardSave[i] = [];
+            for (var j = 0; j < twentyOptions.size.cols; j++) {
+                boardSave[i][j] = this.fieldArray[i][j].tileValue
 
+            }
+        }
+        gameData.twentyBoard = boardSave
+        gameData.twentyCurrentScore = this.score
+        this.saveSettings()
+    }
 
     saveSettings() {
 

@@ -40,7 +40,7 @@ class zNumbers extends Phaser.Scene {
     this.cameras.main.setBackgroundColor(0xf5f5f5);
     var title = this.add.bitmapText(game.config.width / 2, 100, 'topaz', 'zNumbers', 100).setOrigin(.5).setTint(0xff0000);
     //the higher the number of max attempt, the harder
-    this.generateRandomLevel(20);
+    this.generateRandomLevel(5);
     this.createLevel();
 
   }
