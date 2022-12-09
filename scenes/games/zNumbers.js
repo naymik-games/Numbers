@@ -1,7 +1,8 @@
 var znumbersOptions = {
   gameWidth: 900,
   gameHeight: 1600,
-  tileSize: 100,
+  tileSize: 120,
+  spriteSize: 110,
   fieldSize: {
     rows: 6,
     cols: 6
@@ -34,21 +35,86 @@ class zNumbers extends Phaser.Scene {
     ];
 
     this.yOffset = 250;
-    this.xOffset = (game.config.width - (znumbersOptions.fieldSize.rows * (znumbersOptions.tileSize + 20) + znumbersOptions.tileSize / 2)) / 2;
-    console.log(this.xOffset)
 
-    this.cameras.main.setBackgroundColor(0xf5f5f5);
+    this.xOffset = (game.config.width - (znumbersOptions.fieldSize.cols * znumbersOptions.tileSize)) / 2
+    this.tilesArray = [];
+    this.cameras.main.setBackgroundColor(0x000000);
     var title = this.add.bitmapText(game.config.width / 2, 100, 'topaz', 'zNumbers', 100).setOrigin(.5).setTint(0xff0000);
+    this.difficulty = 2
+    this.difficultyArray = [5, 10, 15, 20, 25, 30]
+
     //the higher the number of max attempt, the harder
-    this.generateRandomLevel(5);
-    this.createLevel();
+    this.resetLevel()
+
+
+    let levelcolors = [0xDC5639, 0x823957, 0x436475, 0x5FA34C, 0xFBBD4E, 0xA6AB86]
+    this.levelButtonArray = []
+
+
+
+    var level0 = this.add.image(this.xOffset + 0 * znumbersOptions.tileSize + znumbersOptions.tileSize / 2, 1400, 'tile').setTint(levelcolors[0]).setInteractive().setAlpha(.5).setScale(.8)
+    level0.on('pointerdown', function () {
+      this.setDifficulty(0)
+    }, this)
+    this.levelButtonArray.push(level0)
+
+    var level1 = this.add.image(this.xOffset + 1 * znumbersOptions.tileSize + znumbersOptions.tileSize / 2, 1400, 'tile').setTint(levelcolors[1]).setInteractive().setAlpha(.5).setScale(.8)
+    level1.on('pointerdown', function () {
+      this.setDifficulty(1)
+    }, this)
+    this.levelButtonArray.push(level1)
+
+    var level2 = this.add.image(this.xOffset + 2 * znumbersOptions.tileSize + znumbersOptions.tileSize / 2, 1400, 'tile').setTint(levelcolors[2]).setInteractive().setAlpha(1).setScale(1)
+    level2.on('pointerdown', function () {
+      this.setDifficulty(2)
+    }, this)
+    this.levelButtonArray.push(level2)
+
+    var level3 = this.add.image(this.xOffset + 3 * znumbersOptions.tileSize + znumbersOptions.tileSize / 2, 1400, 'tile').setTint(levelcolors[3]).setInteractive().setAlpha(.5).setScale(.8)
+    level3.on('pointerdown', function () {
+      this.setDifficulty(3)
+    }, this)
+    this.levelButtonArray.push(level3)
+
+    var level4 = this.add.image(this.xOffset + 4 * znumbersOptions.tileSize + znumbersOptions.tileSize / 2, 1400, 'tile').setTint(levelcolors[4]).setInteractive().setAlpha(.5).setScale(.8)
+    level4.on('pointerdown', function () {
+      this.setDifficulty(4)
+    }, this)
+    this.levelButtonArray.push(level4)
+
+    var level5 = this.add.image(this.xOffset + 5 * znumbersOptions.tileSize + znumbersOptions.tileSize / 2, 1400, 'tile').setTint(levelcolors[5]).setInteractive().setAlpha(.5).setScale(.8)
+    level5.on('pointerdown', function () {
+      this.setDifficulty(5)
+    }, this)
+    this.levelButtonArray.push(level5)
+
 
   }
   update() {
 
   }
 
+  setDifficulty(level) {
+    this.difficulty = level
+    this.resetLevel()
+    for (let i = 0; i < this.levelButtonArray.length; i++) {
+      const button = this.levelButtonArray[i];
+      button.setScale(.8).setAlpha(.5)
+    }
+    this.levelButtonArray[level].setScale(1).setAlpha(1)
+  }
+  resetLevel() {
+    if (this.tilesArray.length > 0) {
+      for (var i = 0; i < znumbersOptions.fieldSize.rows; i++) {
 
+        for (var j = 0; j < znumbersOptions.fieldSize.cols; j++) {
+          this.tilesArray[i][j].tileSprite.destroy()
+        }
+      }
+    }
+    this.generateRandomLevel(this.difficultyArray[this.difficulty]);
+    this.createLevel();
+  }
   generateRandomLevel(maxAttempts) {
 
     console.log("A POSSIBLE SOLUTION");
@@ -150,8 +216,8 @@ class zNumbers extends Phaser.Scene {
 
   }
   addTile(row, col) {
-    var tileXPos = this.xOffset + col * (znumbersOptions.tileSize + 20) + znumbersOptions.tileSize / 2;
-    var tileYPos = this.yOffset + row * (znumbersOptions.tileSize + 20) + znumbersOptions.tileSize / 2;
+    var tileXPos = this.xOffset + col * znumbersOptions.tileSize + znumbersOptions.tileSize / 2;
+    var tileYPos = this.yOffset + row * znumbersOptions.tileSize + znumbersOptions.tileSize / 2;
     var theTile = this.add.sprite(tileXPos, tileYPos, "tile");
     theTile.setOrigin(0.5);
     theTile.width = znumbersOptions.tileSize;
@@ -176,8 +242,8 @@ class zNumbers extends Phaser.Scene {
     this.resetTileTweens();
     var posX = e.x - this.xOffset;
     var posY = (e.y - this.yOffset);
-    var pickedRow = Math.floor(posY / (znumbersOptions.tileSize + 20));
-    var pickedCol = Math.floor(posX / (znumbersOptions.tileSize + 20));
+    var pickedRow = Math.floor(posY / znumbersOptions.tileSize);
+    var pickedCol = Math.floor(posX / znumbersOptions.tileSize);
     if (pickedRow >= 0 && pickedCol >= 0 && pickedRow < znumbersOptions.fieldSize.rows && pickedCol < znumbersOptions.fieldSize.cols) {
       var pickedTile = this.tilesArray[pickedRow][pickedCol];
       var pickedValue = pickedTile.value;
