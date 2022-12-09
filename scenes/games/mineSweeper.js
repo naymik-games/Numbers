@@ -430,7 +430,7 @@ class mineSweeper extends Phaser.Scene {
     for (var j = 0; j < gameState.length; j++) {
       for (var i = 0; i < gameState[j].length; i++) {
         if (gridClicked[j][i] != tileClicked) {
-          tileGrid[j][i].setFrame(3);
+          tileGrid[j][i].setFrame(15);
         }
       }
     }
