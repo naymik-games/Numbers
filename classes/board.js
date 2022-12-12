@@ -1,3 +1,5 @@
+let floodFillArray = []
+
 class Board {
   constructor(scene, width, height, numColors) {
     this.width = width;
@@ -7,10 +9,15 @@ class Board {
     this.idCount = 0
     this.selectedColor = null
     this.selectedDots = []
+    this.chain = null
+    this.matches = []
+    this.score = 0
+    this.matchCount = 0
     this.squareCompleted = false
     this.numColors = numColors
     this.redrawTheseColumns = {};
     this.newDots = []
+    this.colorToLookFor = 0
   }
 
   makeBoard() {
@@ -39,17 +46,21 @@ class Board {
 
   };
   addDot(x, y) {
-    var num = Phaser.Math.Between(0, dotColors.length - 1);
+    //var num = Phaser.Math.Between(0, slideColors.length - 1);
+    var num = 0
     var id = this.idCount;
     var dot = new Dot(id, x, y, num, this, this.scene.dotSize)
 
     var dotImg = this.scene.dots.get();
     // console.log(dotImg)
-    dotImg.setTexture('dot2', 0)
-    dotImg.setTint(dotColors[dot.color])
+    dotImg.setTexture('num_tiles', 0)
+    dotImg.setTint(slideColors[num])
     dotImg.displayWidth = this.scene.spriteSize
     dotImg.displayHeight = this.scene.spriteSize
     dotImg.setPosition(game.config.width / 2, -game.config.height / 2);
+
+
+    // dotImg.addChild(text);
     dot.image = dotImg
     // dot.events.onInputDown.add(this.clickDot, this);
     // dot.events.onInputUp.add(this.upDot, this);
@@ -83,9 +94,93 @@ class Board {
     this.selectedColor = "none";
     this.redrawTheseColumns = {};
   }
-
+  resetBoardKeep() {
+    this.selectedDots.forEach(function (dot) {
+      dot.deactivateKeep();
+    });
+    // this.selectedDots = [];
+    //  this.selectedColor = "none";
+    this.redrawTheseColumns = {};
+  }
 
   ///////REMOVING
+  findChainMatches() {
+    console.log(this.selectedDots)
+    /*  const dot = this.selectedDots[2];
+     var testMatch = this.fillMatrix2(dot)
+     console.log(testMatch.length) */
+    var allMatches = []
+    var numberOfMatches = 0
+    for (let i = 0; i < this.selectedDots.length; i++) {
+      const dot = this.selectedDots[i];
+      var testMatch = this.listConnectedItems(dot.coordinates[0], dot.coordinates[1])
+      if (testMatch.length > 2) {
+        this.score += testMatch.length * 5
+        this.matchCount++
+        numberOfMatches++
+        this.clearMatches(testMatch)
+
+      }
+    }
+    this.selectedDots = [];
+    this.selectedColor = "none";
+    return numberOfMatches
+  }
+
+  listConnectedItems(x, y) {
+    if (!this.validCoordinates(x, y) || this.dots[x][y].value == 0) {
+      return;
+    }
+    this.colorToLookFor = this.dots[x][y].value;
+    floodFillArray = [];
+    floodFillArray.length = 0;
+    this.floodFill(x, y);
+
+    return floodFillArray;
+  }
+  floodFill(x, y) {
+    if (!this.validCoordinates(x, y) || this.dots[x][y].value == 0) {
+      return;
+    }
+    if (this.dots[x][y].value == this.colorToLookFor && !this.alreadyVisited(x, y)) {
+      floodFillArray.push({
+        x: x,
+        y: y
+      });
+      this.floodFill(x + 1, y);
+      this.floodFill(x - 1, y);
+      this.floodFill(x, y + 1);
+      this.floodFill(x, y - 1);
+    }
+  }
+  alreadyVisited(x, y) {
+    let found = false;
+    floodFillArray.forEach(function (item) {
+      if (item.x == x && item.y == y) {
+        found = true;
+      }
+    });
+    return found;
+  }
+
+  clearMatches(matches) {
+    for (let i = 0; i < matches.length; i++) {
+      const coord = matches[i];
+      this.dots[coord.x][coord.y].image.setFrame(0)
+      this.dots[coord.x][coord.y].selectable = true
+      this.dots[coord.x][coord.y].value = 0
+
+    }
+  }
+
+
+
+
+  setTiles() {
+    this.selectedDots.forEach(function (dot) {
+      dot.set()
+    });
+  }
   destroyDots() {
     if (this.squareCompleted) {
       this.deleteAllDotsofColor();
@@ -193,9 +288,14 @@ class Board {
     return x >= 0 && y >= 0 && x < this.width && y < this.height;
   }
   validDrag(dot) {
-    return this.rightColor(dot) && this.isNeighbor(dot) && this.notAlreadySelected(dot) && this.canSelectDot(dot);
+    return this.rightColor(dot) && this.isNeighbor(dot) && this.notAlreadySelected(dot) && this.canSelectDot(dot) && this.movesLeft();
   }
-
+  movesLeft() {
+    if (this.selectedDots.length == this.chain.length) {
+      return false
+    }
+    return true
+  }
   rightColor(dot) {
     return dot.color == this.selectedColor;
   }

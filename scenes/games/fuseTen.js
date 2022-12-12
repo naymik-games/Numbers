@@ -12,7 +12,7 @@ let rTotal = 4; //row
 //let imageW = 146;
 //let imageH = 128; 
 let imageW = 154;
-let imageH = 134; 
+let imageH = 134;
 let scale = 1.3;
 let tileScale = 1.4;
 let hexW = imageW * scale;
@@ -79,19 +79,19 @@ class fuseTen extends Phaser.Scene {
     this.slotNext = this.add.image(150, 1375, "hex", 0).setScale(1.2).setTint(0xbbada0);
 
     this.tileGroup = this.add.group();
-     // var num = Phaser.Math.Between(1, this.max);
-     // var tile = this.add.image(this.slotNext.x,this.slotNext.y, "hex", num).setScale(tileScale).setInteractive();
+    // var num = Phaser.Math.Between(1, this.max);
+    // var tile = this.add.image(this.slotNext.x,this.slotNext.y, "hex", num).setScale(tileScale).setInteractive();
     //  tile.value = num
-      //var text1 = this.add.bitmapText(this.slot.x, this.slot.y, 'topaz', tile.value, 90).setOrigin(.5).setTint(0xc76210);
-      //tile.text = text1
-     // this.input.setDraggable(tile);
+    //var text1 = this.add.bitmapText(this.slot.x, this.slot.y, 'topaz', tile.value, 90).setOrigin(.5).setTint(0xc76210);
+    //tile.text = text1
+    // this.input.setDraggable(tile);
     //  tile.disableInteractive()
-     // this.tilePool.unshift(tile)
-     this.addNext();
-   this.updateTile();
-   // var next = this.tilePool.pop()
-  //  next.setPosition(this.slot.x, this.slot.y)
-  //  next.setInteractive()
+    // this.tilePool.unshift(tile)
+    this.addNext();
+    this.updateTile();
+    // var next = this.tilePool.pop()
+    //  next.setPosition(this.slot.x, this.slot.y)
+    //  next.setInteractive()
     //  this.player = this.add.image(coo.x, coo.y, "hex").setScale(tileScale).setTint(0x00ff00);
     //  this.player.hex = Hex(0,0,0)
     // console.log(this.player.hex)
@@ -121,18 +121,18 @@ class fuseTen extends Phaser.Scene {
     this.input.setDraggable(this.twoHex);
 */
 
-this.scoreText = this.add.bitmapText(750, 1450, 'topaz', this.score, 90).setOrigin(.5).setTint(0xc76210);
+    this.scoreText = this.add.bitmapText(750, 1450, 'topaz', this.score, 90).setOrigin(.5).setTint(0xc76210);
 
 
 
 
-    this.input.on('drag', function(pointer, gameObject, dragX, dragY) {
+    this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
       gameObject.x = dragX;
       gameObject.y = dragY;
       //gameObject.text.x = dragX;
       //gameObject.text.y = dragY;
     }, this)
-    this.input.on('dragenter', function(pointer, gameObject, target) {
+    this.input.on('dragenter', function (pointer, gameObject, target) {
       target.setAlpha(.2)
       //tatget.setTint(0xff0000)
 
@@ -141,21 +141,21 @@ this.scoreText = this.add.bitmapText(750, 1450, 'topaz', this.score, 90).setOrig
       //this.drawHex(hex)
     }, this)
 
-    this.input.on('dragleave', function(pointer, gameObject, target) {
+    this.input.on('dragleave', function (pointer, gameObject, target) {
       target.setAlpha(1)
 
 
     })
-    this.input.on('drop', function(pointer, gameObject, target) {
+    this.input.on('drop', function (pointer, gameObject, target) {
       this.dropTile(gameObject, target)
       target.setAlpha(1)
     }, this)
-    this.input.on('dragend', function(pointer, gameObject, dropped) {
+    this.input.on('dragend', function (pointer, gameObject, dropped) {
       if (!dropped) {
         //console.log(gameObject.input.dragStartX)
         gameObject.x = gameObject.input.dragStartX;
         gameObject.y = gameObject.input.dragStartY;
-       // target.setAlpha(1)
+        // target.setAlpha(1)
         // gameObject.text.x = gameObject.input.dragStartX;
         // gameObject.text.y = gameObject.input.dragStartY;
       }
@@ -176,29 +176,29 @@ this.scoreText = this.add.bitmapText(750, 1450, 'topaz', this.score, 90).setOrig
   update() {
 
   }
-  scoreUpdate(){
-   
+  scoreUpdate() {
+
     this.scoreText.setText(this.score)
-   // this.levelBarProgress.displayWidth = this.levelBarWidth * (tempScore / this.scoreGoal)
-    if(this.tempScore >= this.scoreGoal){
-       // this.scoreGoal += 500;
-       
-        this.level++;
-        this.max++;
-       // this.nextLevel++;
-        this.tempScore = 0;
-        this.scoreGoal += 25;
+    // this.levelBarProgress.displayWidth = this.levelBarWidth * (tempScore / this.scoreGoal)
+    if (this.tempScore >= this.scoreGoal) {
+      // this.scoreGoal += 500;
+
+      this.level++;
+      this.max++;
+      // this.nextLevel++;
+      this.tempScore = 0;
+      this.scoreGoal += 25;
       //  this.levelBarProgress.displayWidth = this.levelBarWidth * (tempScore / this.scoreGoal)
       //  this.levelBarProgress.setTint(this.colors[this.level])
       //  this.nextLevelText.setText(this.nextLevel);
       //  this.currentLevelText.setText(this.level);
       //  this.currentLevelTile.setTint(this.colors[this.level])
-       // this.nextLevelTile.setTint(this.colors[this.nextLevel])
-       // this.damageEmit(this.currentLevelText.x, this.currentLevelText.y, this.colors[this.Level])
+      // this.nextLevelTile.setTint(this.colors[this.nextLevel])
+      // this.damageEmit(this.currentLevelText.x, this.currentLevelText.y, this.colors[this.Level])
     }
   }
-  updateTile(){
-    
+  updateTile() {
+
     var tile = this.tile;
     var tween = this.tweens.add({
       targets: tile,
@@ -207,14 +207,14 @@ this.scoreText = this.add.bitmapText(750, 1450, 'topaz', this.score, 90).setOrig
       scale: tileScale,
       duration: 200,
       onCompleteScope: this,
-      onComplete: function(){
+      onComplete: function () {
         tile.setInteractive()
         this.addNext();
       }
     })
   }
-  addNext(){
-    if(this.tilePool.length > 0){
+  addNext() {
+    if (this.tilePool.length > 0) {
       this.tile = this.tilePool.shift()
       this.tile.setScale(1);
       this.tile.setVisible(true);
@@ -224,18 +224,18 @@ this.scoreText = this.add.bitmapText(750, 1450, 'topaz', this.score, 90).setOrig
     }
     //this.tile = this.tilePool.length > 0 ? this.tilePool.shift() : this.tileGroup.create(this.slotNext.x, this.slotNext.y, "hex", 0);
 
- this.children.bringToTop(this.tile)
+    this.children.bringToTop(this.tile)
     var num = Phaser.Math.Between(1, this.max);
-     // var tile = this.add.image(this.slotNext.x,this.slotNext.y, "hex", num).setScale(tileScale).setInteractive();
-      this.tile.setInteractive();
-      this.tile.value = num;
-      this.tile.setFrame(num);
-      
-      //var text1 = this.add.bitmapText(this.slot.x, this.slot.y, 'topaz', tile.value, 90).setOrigin(.5).setTint(0xc76210);
-      //tile.text = text1
-      this.input.setDraggable(this.tile);
-      this.tile.disableInteractive()
-    
+    // var tile = this.add.image(this.slotNext.x,this.slotNext.y, "hex", num).setScale(tileScale).setInteractive();
+    this.tile.setInteractive();
+    this.tile.value = num;
+    this.tile.setFrame(num);
+
+    //var text1 = this.add.bitmapText(this.slot.x, this.slot.y, 'topaz', tile.value, 90).setOrigin(.5).setTint(0xc76210);
+    //tile.text = text1
+    this.input.setDraggable(this.tile);
+    this.tile.disableInteractive()
+
   }
   getNXY(x, y, dir) {
     if (dir == 0) {
@@ -252,63 +252,6 @@ this.scoreText = this.add.bitmapText(750, 1450, 'topaz', this.score, 90).setOrig
       return { x: x, y: y + hexH }
     }
   }
-  test(e) {
-    var distanceThreshold = 80
-    var speedThreshold = 200
-    //console.log(e.x)
-    var diff = e.upX - e.downX
-    //console.log(diff)
-    //console.log(e.upTime - e.downTime)
-    var delta = {
-      x: e.upX - e.downX,
-      y: e.upY - e.downY,
-      t: e.upTime - e.downTime
-    }
-    var magnitude = delta.x ** 2 + delta.y ** 2;
-    if (magnitude < distanceThreshold ** 2) {
-      console.log('not far enough')
-    }
-
-    if (delta.t > speedThreshold) {
-      console.log('too slow')
-    }
-
-
-    if (delta.y < 0) {
-      console.log('up')
-      if (delta.x * tan60 >= -delta.y) {
-        console.log('right up')
-        this.move(1)
-      } else if (delta.x * tan60 > delta.y) {
-        console.log('middle up')
-        this.move(2)
-      } else {
-        console.log('left up')
-        this.move(3)
-      }
-    } else if (delta.y > 0) {
-      console.log('down')
-      if (delta.x * tan60 > delta.y) {
-        console.log('right down')
-        this.move(0)
-      } else if (delta.x * tan60 >= -delta.y) {
-        console.log('midfle down')
-        this.move(5)
-      } else {
-        console.log('left down')
-        this.move(4)
-      }
-    }
-
-
-
-
-
-
-
-  }
-
-
 
 
 
@@ -333,30 +276,30 @@ this.scoreText = this.add.bitmapText(750, 1450, 'topaz', this.score, 90).setOrig
     tile.tileSprite = gameObject;
 
     target.input.dropZone = false;
-	this.updateTile()
+    this.updateTile()
     this.fuseTiles(hex, gameObject.value)
 
     // performing a flood fill on the selected tile
     // this will populate "filled" array
     //this.floodFill(hex, gameObject.value);
-   var sixes = this.checkSixes();
-   if(sixes.length > 5){
-	   for(var h = 0; h < sixes.length; h++){
-		   var tile = this.getHexObjectByHex(sixes[h]);
-		    var num = Phaser.Math.Between(1, this.max);
-		   tile.value = num;
-		   tile.tileSprite.setFrame(num)
-	   }
-   }
-   
-   /* var next = this.tilePool.pop()
-    next.setPosition(this.slot.x, this.slot.y)
-    next.setVisible(true)
-    next.setInteractive();
-    var num = Phaser.Math.Between(1, this.max);
-    next.value = num;
-    next.setFrame(num)*/
-    
+    var sixes = this.checkSixes();
+    if (sixes.length > 5) {
+      for (var h = 0; h < sixes.length; h++) {
+        var tile = this.getHexObjectByHex(sixes[h]);
+        var num = Phaser.Math.Between(1, this.max);
+        tile.value = num;
+        tile.tileSprite.setFrame(num)
+      }
+    }
+
+    /* var next = this.tilePool.pop()
+     next.setPosition(this.slot.x, this.slot.y)
+     next.setVisible(true)
+     next.setInteractive();
+     var num = Phaser.Math.Between(1, this.max);
+     next.value = num;
+     next.setFrame(num)*/
+
     // do we have more than one tile in the array?
 
   }
@@ -382,76 +325,24 @@ this.scoreText = this.add.bitmapText(750, 1450, 'topaz', this.score, 90).setOrig
         moveTile.tileSprite.setVisible(false)
         this.tilePool.push(moveTile.tileSprite);
         moveTile.tileSprite = null;
-        
+
         this.tempScore += newVal;
         this.score += newVal;
-       this.scoreUpdate()
-      //  this.scoreText.setText(this.score)
-        
+        this.scoreUpdate()
+        //  this.scoreText.setText(this.score)
+
 
       }
       this.fuseTiles(targetHex, targetTile.value)
     }
-   // console.log(this.tilePool.length)
+    // console.log(this.tilePool.length)
   }
 
 
-  
-  
-  fuseTiles_doesntwork(targetHex, value) {
-    this.filled = []
-    var matches = this.checkMatches(targetHex, value);
-    if (matches > 0) {
-      var targetTile = this.getHexObjectByHex(targetHex)
-      var newVal = value += 1
-      for (var h = 0; h < this.filled.length; h++) {
-        var moveTile = this.getHexObjectByHex(this.filled[h])
-        // tile.image.setTint(0x00ff00)
-          var tween = this.tweens.add({
-            targets: moveTile.tileSprite,
-            x: targetTile.image.x,
-            y: targetTile.image.y,
-            duration: 100,
-            onCompleteScope: this,
-            onComplete: function(){
-              moveTile.tileSprite.setVisible(false)
-              this.tilePool.push(moveTile.tileSprite);
-          moveTile.tileSprite = null;
-          moveTile.occupied = false;
-
-        moveTile.image.input.dropZone = true;
-        moveTile.value = 0;
-       // moveTile.tileSprite.setVisible(false)
-        //this.tilePool.push(moveTile.tileSprite);
-        targetTile.value = newVal;
-        targetTile.tileSprite.setFrame(newVal);
-        
-      //  moveTile.tileSprite = null;
-            }
-          })
-       // moveTile.tileSprite.setPosition(targetTile.image.x, targetTile.image.y)
 
 
-        
-        
-        this.tempScore += newVal;
-        this.score += newVal;
-       this.scoreUpdate()
-      //  this.scoreText.setText(this.score)
-        
 
-      }
-      this.fuseTiles(targetHex, targetTile.value)
-    }
-   this.checkBoard();
-  }
 
-  
-  
-  
-  
-  
-  
   checkMatches(hex, value) {
 
     for (var i = 0; i < 6; i++) {
@@ -464,8 +355,11 @@ this.scoreText = this.add.bitmapText(750, 1450, 'topaz', this.score, 90).setOrig
         }
       }
     }
-    //console.log(this.filled)
+    console.log(this.filled)
+
     return this.filled.length
+
+
   }
 
   floodFill(hex, value) {
@@ -502,30 +396,30 @@ this.scoreText = this.add.bitmapText(750, 1450, 'topaz', this.score, 90).setOrig
 
 
   }
-  checkSixes(){
-  var sixArray = [];
-    for(var i = 0; i < this.hexagons.length; i++){
-      if(this.hexagons[i].value == 12){
+  checkSixes() {
+    var sixArray = [];
+    for (var i = 0; i < this.hexagons.length; i++) {
+      if (this.hexagons[i].value == 12) {
         sixArray.push(this.hexagons[i].hex)
       }
-      
+
     }
     return sixArray;
   }
-  
+
   checkBoard() {
     var open = false;
-    for(var i = 0; i < this.hexagons.length; i++){
-      if(this.hexagons[i].occupied){
+    for (var i = 0; i < this.hexagons.length; i++) {
+      if (this.hexagons[i].occupied) {
         open = true
       }
-      
+
     }
-    if(!open){
+    if (!open) {
       alert('game over')
     }
   }
-  
+
   pointInArray(p) {
     for (var i = 0; i < this.filled.length; i++) {
       if (this.filled[i] == p) {
@@ -544,8 +438,7 @@ this.scoreText = this.add.bitmapText(750, 1450, 'topaz', this.score, 90).setOrig
     this.graphics.lineStyle(4, 0xfcba03);
     this.graphics.beginPath();
     this.graphics.moveTo(polygon.points[0].x, polygon.points[0].y);
-    for (var i = 1; i < polygon.points.length; i++)
-    {
+    for (var i = 1; i < polygon.points.length; i++) {
       this.graphics.lineTo(polygon.points[i].x, polygon.points[i].y);
     }
 
@@ -562,7 +455,7 @@ this.scoreText = this.add.bitmapText(750, 1450, 'topaz', this.score, 90).setOrig
       y: newCoo.y,
       duration: 100,
       onCompleteScope: this,
-      onComplete: function() {
+      onComplete: function () {
         this.player.hex = newHex;
       }
 

@@ -23,6 +23,7 @@ var filesToCache = [
   '/scenes/games/tenPair.js',
   '/scenes/games/twoFourEight.js',
   '/scenes/games/zNumbers.js',
+  '/scenes/games/slide.js',
 
   '/assets/fonts/topaz.png',
   '/assets/fonts/topaz.xml',
@@ -33,6 +34,8 @@ var filesToCache = [
   '/classes/hexlib.js',
   '/classes/settings.js',
   '/classes/toast.js',
+  '/classes/board.js',
+  '/classes/dot.js',
 
   '/assets/particle.png',
   '/assets/particles.png',

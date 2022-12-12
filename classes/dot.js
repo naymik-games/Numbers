@@ -4,6 +4,7 @@ class Dot {
     this.color = color;
     this.type = 0;
     this.strength = 0
+    this.value = 0
     this.board = board;
     this.disabled = false;
     this.bounce = false
@@ -19,6 +20,11 @@ class Dot {
 
 
   }
+  set() {
+    // this.board.dots[randX][randY].image.setFrame(ranVal)
+    this.value = this.image.frame.name
+    this.selectable = false
+  }
   activate() {
     //var visibleDot = this.findDOMObject();
     //visibleDot.addClass("active");
@@ -30,21 +36,18 @@ class Dot {
 
   }
   deactivate() {
+    this.image.setFrame(0)
+    this.image.setAlpha(1)
+  }
+  deactivateKeep() {
 
     this.image.setAlpha(1)
   }
-
   ///remove
 
-  explode() {
+  explode(matches) {
     //this.board.scene.killAndHide(this.image)
-    if (this.strength < 1) {
-      this.image.setActive(false)
-      this.image.setVisible(false)
-    } else if (this.type == 2) {
-      this.strength--
-      this.image.setFrame(this.strength)
-    }
+
   }
   destroy() {
     if (this.strength == 0) {

@@ -114,12 +114,16 @@ class preloadGame extends Phaser.Scene {
       frameWidth: 23,
       frameHeight: 23
     });
+    this.load.spritesheet("num_tiles", "assets/sprites/number_tiles_.png", {
+      frameWidth: 128,
+      frameHeight: 128
+    });
     this.load.image('blank', 'assets/sprites/blank.png');
     this.load.image('plus', 'assets/sprites/Plus.png');
     this.load.image('bar', 'assets/sprites/bar.png');
     this.load.image('button', 'assets/sprites/button.png');
 
-
+    this.load.image('dot', 'assets/sprites/dot2.png');
     this.load.image('blankoutline', 'assets/sprites/outline_tile.png');
     this.load.image("tile", "assets/sprites/tile.png");
     this.load.image("circle", "assets/sprites/circle.png");

@@ -96,6 +96,11 @@ class startGame extends Phaser.Scene {
       this.clickHandler(8)
     }, this);
 
+    var startSlide = this.add.bitmapText(game.config.width / 2 - 50, 1275, 'topaz', 'NumberSide', 50).setOrigin(0, .5).setTint(0x000000);
+    startSlide.setInteractive();
+    startSlide.on('pointerdown', function () {
+      this.clickHandler(9)
+    }, this);
 
     var remove = this.add.bitmapText(game.config.width / 2, 1600, 'topaz', 'REMOVE DATA', 50).setOrigin(.5).setTint(0x000000).setInteractive();
     remove.on('pointerdown', function () {

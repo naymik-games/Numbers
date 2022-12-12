@@ -1,6 +1,6 @@
 let currentGame;
-let games = ['plusPlus', 'play2048', 'zNumbers', 'nonogram', 'tenPair', 'mineSweeper', 'twoFourEight', 'fuseTen', 'gridPlus', 'numberRPG'];
-let gameNames = ['Plus+Plus', '2048', 'zNumbers', 'Nonogram', 'TenPair', 'Minesweeper', '2-4-8', 'Fuse Ten', 'Grid+', 'Number RPG'];
+let games = ['plusPlus', 'play2048', 'zNumbers', 'nonogram', 'tenPair', 'mineSweeper', 'twoFourEight', 'fuseTen', 'gridPlus', 'Slide'];
+let gameNames = ['Plus+Plus', '2048', 'zNumbers', 'Nonogram', 'TenPair', 'Minesweeper', '2-4-8', 'Fuse Ten', 'Grid+', 'NumberSlide'];
 //plusPlus, play2048, zNumbers, nonogram
 
 let nonoLevel = {}
