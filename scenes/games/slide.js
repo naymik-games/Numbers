@@ -29,7 +29,7 @@ class Slide extends Phaser.Scene {
       maxSize: (this.boardWidth * this.boardHeight) + 30,
 
     });
-
+    this.remove = false
     this.numText = this.add.bitmapText(15, 1400, 'topaz', '', 60).setOrigin(0, .5).setTint(0xecf0f1);
     this.board = new Board(this, this.boardWidth, this.boardHeight, this.numColors);
     this.board.makeBoard()
@@ -39,7 +39,21 @@ class Slide extends Phaser.Scene {
     this.generateChain()
 
     this.score = this.add.bitmapText(50, 50, 'topaz', this.board.score, 80).setOrigin(0, .5).setTint(0xfafafa);
+    this.scoreProgress = this.add.bitmapText(675, 50, 'topaz', this.board.scoreProgress, 80).setOrigin(0, .5).setTint(0xfafafa);
     this.matchCount = this.add.bitmapText(450, 50, 'topaz', this.board.matchCount, 80).setOrigin(0, .5).setTint(0xfafafa)
+
+
+    this.removeButton = this.add.image(75, 1400, 'num_tiles', 32).setTint(slideColors[0]).setScale(.75).setAlpha(1).setInteractive()
+    this.removeButton.on('pointerdown', function () {
+      if (this.remove) {
+        this.removeButton.setTint(slideColors[0])
+        this.remove = false
+      } else {
+        this.removeButton.clearTint()
+        this.remove = true
+      }
+      this.remove = true
+    }, this)
 
     this.input.on("pointerdown", this.dotSelect, this);
     this.input.on("pointermove", this.dotMove, this);
@@ -51,6 +65,15 @@ class Slide extends Phaser.Scene {
     this.rectArray = []
     let row = Math.floor((pointer.y - this.yOffset) / this.dotSize);
     let col = Math.floor((pointer.x - this.xOffset) / this.dotSize);
+
+    if (this.board.validCoordinates(col, row) && this.remove && this.board.dots[col][row].value > 0) {
+      console.log('remove')
+      this.board.clearMatch2(this.board.dots[col][row].coordinates)
+      this.remove = false
+      this.removeButton.setTint(slideColors[0])
+      return
+    }
+    if (this.remove) { return }
     if (!this.board.validCoordinates(col, row) || !this.board.canSelectDot(this.board.dots[col][row])) { return }
     console.log('row ' + row + ' col ' + col)
     this.board.dots[col][row].activate();
@@ -99,6 +122,10 @@ class Slide extends Phaser.Scene {
     }
   }
   dotUp() {
+    if (this.remove) {
+
+      return
+    }
     if (!this.board.dragging) { return }
     if (this.lineArray.length > 0) {
       this.lineArray.forEach(function (line) {
@@ -194,6 +221,15 @@ class Slide extends Phaser.Scene {
   updateStats() {
     this.score.setText(this.board.score)
     this.matchCount.setText(this.board.matchCount)
+    this.scoreProgress.setText(this.board.scoreProgress)
+    if (this.board.scoreProgress >= 100) {
+      this.board.scoreProgress = 0
+      this.nextLevel()
+    }
+  }
+  nextLevel() {
+    this.numberRange[0]++
+    this.numberRange[1]++
   }
 }
 

@@ -12,6 +12,7 @@ class Board {
     this.chain = null
     this.matches = []
     this.score = 0
+    this.scoreProgress = 0
     this.matchCount = 0
     this.squareCompleted = false
     this.numColors = numColors
@@ -116,6 +117,7 @@ class Board {
       testMatch = this.listConnectedItems(dot.coordinates[0], dot.coordinates[1])
       if (testMatch.length > 2) {
         this.score += testMatch.length * 5
+        this.scoreProgress += testMatch.length * 5
         this.matchCount++
         numberOfMatches++
         this.clearMatches(testMatch)
@@ -166,15 +168,21 @@ class Board {
   clearMatches(matches) {
     for (let i = 0; i < matches.length; i++) {
       const coord = matches[i];
-      this.dots[coord.x][coord.y].image.setFrame(0)
-      this.dots[coord.x][coord.y].selectable = true
-      this.dots[coord.x][coord.y].value = 0
+      this.clearMatch(coord)
 
     }
   }
 
-
-
+  clearMatch(coord) {
+    this.dots[coord.x][coord.y].image.setFrame(0)
+    this.dots[coord.x][coord.y].selectable = true
+    this.dots[coord.x][coord.y].value = 0
+  }
+  clearMatch2(coord) {
+    this.dots[coord[0]][coord[1]].image.setFrame(0)
+    this.dots[coord[0]][coord[1]].selectable = true
+    this.dots[coord[0]][coord[1]].value = 0
+  }
 
   setTiles() {
     this.selectedDots.forEach(function (dot) {
