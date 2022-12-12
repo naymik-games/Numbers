@@ -269,6 +269,7 @@ class fuseTen extends Phaser.Scene {
 
     //grab the target tile
     var hex = pixel_to_hex(this.flat, Point(target.x, target.y))
+    console.log(hex)
     var tile = this.getHexObjectByHex(hex)
     tile.value = gameObject.value
     //console.log('tv' + tile.value + 'go' + gameObject.value)
@@ -282,16 +283,16 @@ class fuseTen extends Phaser.Scene {
     // performing a flood fill on the selected tile
     // this will populate "filled" array
     //this.floodFill(hex, gameObject.value);
-    var sixes = this.checkSixes();
-    if (sixes.length > 5) {
-      for (var h = 0; h < sixes.length; h++) {
-        var tile = this.getHexObjectByHex(sixes[h]);
-        var num = Phaser.Math.Between(1, this.max);
-        tile.value = num;
-        tile.tileSprite.setFrame(num)
-      }
-    }
-
+    /*  var sixes = this.checkSixes();
+     if (sixes.length > 5) {
+       for (var h = 0; h < sixes.length; h++) {
+         var tile = this.getHexObjectByHex(sixes[h]);
+         var num = Phaser.Math.Between(1, this.max);
+         tile.value = num;
+         tile.tileSprite.setFrame(num)
+       }
+     }
+  */
     /* var next = this.tilePool.pop()
      next.setPosition(this.slot.x, this.slot.y)
      next.setVisible(true)
@@ -303,6 +304,55 @@ class fuseTen extends Phaser.Scene {
     // do we have more than one tile in the array?
 
   }
+  findChainMatches() {
+
+    var testMatch = []
+    var numberOfMatches = 0
+
+    const dot = this.selectedDots[i];
+    testMatch = this.listConnectedItems(dot.coordinates[0], dot.coordinates[1])
+    if (testMatch.length > 2) {
+      this.score += testMatch.length * 5
+      this.matchCount++
+      numberOfMatches++
+      this.clearMatches(testMatch)
+
+    }
+
+    this.selectedDots = [];
+    this.selectedColor = "none";
+    return numberOfMatches
+  }
+  listConnectedItems(hex) {
+    if (!this.inMap(hex)) {
+      return [];
+    }
+    var tile = this.getHexObjectByHex(hex)
+    this.colorToLookFor = tile.value;
+    floodFillArray = [];
+    floodFillArray.length = 0;
+    this.floodFill(hex);
+
+    return floodFillArray;
+  }
+  floodFill(hex) {
+    if (!this.inMap(hex) || this.getHexObjectByHex(hex).value == 0) {
+      return;
+    }
+    if (this.getHexObjectByHex(hex).value == this.colorToLookFor && !this.alreadyVisited(x, y)) {
+      floodFillArray.push({
+        x: x,
+        y: y
+      });
+      this.floodFill(x + 1, y);
+      this.floodFill(x - 1, y);
+      this.floodFill(x, y + 1);
+      this.floodFill(x, y - 1);
+    }
+  }
+
+
+
 
   fuseTiles(targetHex, value) {
     this.filled = []

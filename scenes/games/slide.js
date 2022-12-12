@@ -21,6 +21,7 @@ class Slide extends Phaser.Scene {
     this.moveLimit = 20;
     this.startCount = 6
     this.numberRange = [1, 4]
+    this.chainRange = [1, 4]
     this.chainSlots = []
     this.cameras.main.setBackgroundColor(0x333333);
     this.dots = this.add.group({
@@ -36,6 +37,9 @@ class Slide extends Phaser.Scene {
 
     this.drawBoard()
     this.generateChain()
+
+    this.score = this.add.bitmapText(50, 50, 'topaz', this.board.score, 80).setOrigin(0, .5).setTint(0xfafafa);
+    this.matchCount = this.add.bitmapText(450, 50, 'topaz', this.board.matchCount, 80).setOrigin(0, .5).setTint(0xfafafa)
 
     this.input.on("pointerdown", this.dotSelect, this);
     this.input.on("pointermove", this.dotMove, this);
@@ -117,6 +121,7 @@ class Slide extends Phaser.Scene {
       var matches = this.board.findChainMatches()
       console.log(matches)
       this.generateChain()
+      this.updateStats()
     } else {
       console.log('No!')
       this.board.resetBoard()
@@ -128,7 +133,7 @@ class Slide extends Phaser.Scene {
     for (var i = 0; i < this.chainSlots.length; i++) {
       this.chainSlots[i].setAlpha(0)
     }
-    var newChainLength = Phaser.Math.Between(2, 3)
+    var newChainLength = Phaser.Math.Between(this.chainRange[0], this.chainRange[1])
     for (var j = 0; j < newChainLength; j++) {
       this.board.chain.push(Phaser.Math.Between(this.numberRange[0], this.numberRange[1]))
     }
@@ -185,6 +190,10 @@ class Slide extends Phaser.Scene {
 
 
 
+  }
+  updateStats() {
+    this.score.setText(this.board.score)
+    this.matchCount.setText(this.board.matchCount)
   }
 }
 

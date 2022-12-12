@@ -109,11 +109,11 @@ class Board {
     /*  const dot = this.selectedDots[2];
      var testMatch = this.fillMatrix2(dot)
      console.log(testMatch.length) */
-    var allMatches = []
+    var testMatch = []
     var numberOfMatches = 0
     for (let i = 0; i < this.selectedDots.length; i++) {
       const dot = this.selectedDots[i];
-      var testMatch = this.listConnectedItems(dot.coordinates[0], dot.coordinates[1])
+      testMatch = this.listConnectedItems(dot.coordinates[0], dot.coordinates[1])
       if (testMatch.length > 2) {
         this.score += testMatch.length * 5
         this.matchCount++
@@ -129,7 +129,7 @@ class Board {
 
   listConnectedItems(x, y) {
     if (!this.validCoordinates(x, y) || this.dots[x][y].value == 0) {
-      return;
+      return [];
     }
     this.colorToLookFor = this.dots[x][y].value;
     floodFillArray = [];
