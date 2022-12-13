@@ -6,6 +6,7 @@ class Board {
     this.height = height
     this.scene = scene
     this.dots = [];
+    this.boardData = []
     this.idCount = 0
     this.selectedColor = null
     this.selectedDots = []
@@ -30,20 +31,21 @@ class Board {
 
 
 
-
+    console.log(this.boardData)
 
 
   };
 
   makeColumn(xAxis) {
-
+    var columnData = []
     var column = [];
     for (var yAxis = 0; yAxis < this.height; yAxis++) {
       var dot = this.addDot(xAxis, yAxis);
       column.push(dot);
-
+      columnData.push(0)
     }
     this.dots.push(column);
+    this.boardData.push(columnData)
 
   };
   addDot(x, y) {

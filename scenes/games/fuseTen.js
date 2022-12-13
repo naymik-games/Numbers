@@ -7,14 +7,14 @@ let fuseOptions = {
   sum: 10,
   gameMode: 0
 }
-let qTotal = 4; //col
+let qTotal = 5; //col
 let rTotal = 4; //row
 //let imageW = 146;
 //let imageH = 128; 
 let imageW = 154;
 let imageH = 134;
-let scale = 1.3;
-let tileScale = 1.4;
+let scale = 1;
+let tileScale = 1.1;
 let hexW = imageW * scale;
 let hexH = imageH * scale;
 let hexSide = hexW / 2;
@@ -36,7 +36,7 @@ class fuseTen extends Phaser.Scene {
   }
   create() {
     this.colors = [0xa8324e, 0x32a85a, 0x326ba8, 0xa86432, 0xa232a8]
-    this.max = 3;
+    this.range = [1, 3];
     this.score = 0;
     this.tempScore = 0;
     this.scoreGoal = 50;
@@ -184,10 +184,11 @@ class fuseTen extends Phaser.Scene {
       // this.scoreGoal += 500;
 
       this.level++;
-      this.max++;
+      this.range[0]++
+      this.range[1]++
       // this.nextLevel++;
       this.tempScore = 0;
-      this.scoreGoal += 25;
+      // this.scoreGoal += 25;
       //  this.levelBarProgress.displayWidth = this.levelBarWidth * (tempScore / this.scoreGoal)
       //  this.levelBarProgress.setTint(this.colors[this.level])
       //  this.nextLevelText.setText(this.nextLevel);
@@ -225,7 +226,7 @@ class fuseTen extends Phaser.Scene {
     //this.tile = this.tilePool.length > 0 ? this.tilePool.shift() : this.tileGroup.create(this.slotNext.x, this.slotNext.y, "hex", 0);
 
     this.children.bringToTop(this.tile)
-    var num = Phaser.Math.Between(1, this.max);
+    var num = Phaser.Math.Between(this.range[0], this.range[1]);
     // var tile = this.add.image(this.slotNext.x,this.slotNext.y, "hex", num).setScale(tileScale).setInteractive();
     this.tile.setInteractive();
     this.tile.value = num;
@@ -278,96 +279,94 @@ class fuseTen extends Phaser.Scene {
 
     target.input.dropZone = false;
     this.updateTile()
-    this.fuseTiles(hex, gameObject.value)
+    var matches = this.findChainMatches(hex)
 
-    // performing a flood fill on the selected tile
-    // this will populate "filled" array
-    //this.floodFill(hex, gameObject.value);
-    /*  var sixes = this.checkSixes();
-     if (sixes.length > 5) {
-       for (var h = 0; h < sixes.length; h++) {
-         var tile = this.getHexObjectByHex(sixes[h]);
-         var num = Phaser.Math.Between(1, this.max);
-         tile.value = num;
-         tile.tileSprite.setFrame(num)
-       }
-     }
-  */
-    /* var next = this.tilePool.pop()
-     next.setPosition(this.slot.x, this.slot.y)
-     next.setVisible(true)
-     next.setInteractive();
-     var num = Phaser.Math.Between(1, this.max);
-     next.value = num;
-     next.setFrame(num)*/
-
-    // do we have more than one tile in the array?
 
   }
-  findChainMatches() {
+  findChainMatches(hex) {
 
     var testMatch = []
     var numberOfMatches = 0
 
-    const dot = this.selectedDots[i];
-    testMatch = this.listConnectedItems(dot.coordinates[0], dot.coordinates[1])
+    testMatch = this.listConnectedItems(hex)
+
     if (testMatch.length > 2) {
-      this.score += testMatch.length * 5
-      this.matchCount++
-      numberOfMatches++
-      this.clearMatches(testMatch)
+
+      /*  this.score += testMatch.length * 5
+       this.matchCount++
+       numberOfMatches++ */
+      this.fuseTiles(testMatch)
 
     }
 
-    this.selectedDots = [];
-    this.selectedColor = "none";
     return numberOfMatches
   }
+
   listConnectedItems(hex) {
     if (!this.inMap(hex)) {
       return [];
     }
+
     var tile = this.getHexObjectByHex(hex)
     this.colorToLookFor = tile.value;
-    floodFillArray = [];
-    floodFillArray.length = 0;
+
+    this.floodFillArray = [];
+    this.floodFillArray.length = 0;
     this.floodFill(hex);
 
-    return floodFillArray;
+    return this.floodFillArray;
   }
+
   floodFill(hex) {
     if (!this.inMap(hex) || this.getHexObjectByHex(hex).value == 0) {
       return;
     }
-    if (this.getHexObjectByHex(hex).value == this.colorToLookFor && !this.alreadyVisited(x, y)) {
-      floodFillArray.push({
-        x: x,
-        y: y
-      });
-      this.floodFill(x + 1, y);
-      this.floodFill(x - 1, y);
-      this.floodFill(x, y + 1);
-      this.floodFill(x, y - 1);
+    if (this.getHexObjectByHex(hex).value == this.colorToLookFor && !this.alreadyVisited(hex)) {
+
+      this.floodFillArray.push(hex);
+
+      for (var i = 0; i < 6; i++) {
+        var newHex = hex_neighbor(hex, i);
+
+        this.floodFill(newHex);
+
+
+      }
+
     }
   }
 
+  alreadyVisited(hex) {
+    let found = false;
+    this.floodFillArray.forEach(function (item) {
+      if (item.q == hex.q && item.r == hex.r && item.s == hex.s) {
+        found = true;
+      }
+    });
+    return found;
+  }
 
 
+  fuseTiles(matches) {
 
-  fuseTiles(targetHex, value) {
-    this.filled = []
-    var matches = this.checkMatches(targetHex, value);
-    if (matches > 0) {
-      var targetTile = this.getHexObjectByHex(targetHex)
-      var newVal = value += 1
-      for (var h = 0; h < this.filled.length; h++) {
-        var moveTile = this.getHexObjectByHex(this.filled[h])
+    // var matches = this.checkMatches(targetHex, value);
+
+    if (matches.length > 0) {
+      var targetTile = this.getHexObjectByHex(matches[0])
+      var newVal = targetTile.value + 1
+
+      console.log('target val ' + targetTile.value + ' match len ' + matches.length)
+      this.tempScore += targetTile.value * matches.length;
+      this.score += targetTile.value * matches.length;
+      this.scoreUpdate()
+      targetTile.value = newVal;
+      targetTile.tileSprite.setFrame(newVal);
+
+      for (var h = 1; h < matches.length; h++) {
+        var moveTile = this.getHexObjectByHex(matches[h])
 
         moveTile.tileSprite.setPosition(targetTile.image.x, targetTile.image.y)
 
-
-        targetTile.value = newVal;
-        targetTile.tileSprite.setFrame(newVal);
         moveTile.occupied = false;
 
         moveTile.image.input.dropZone = true;
@@ -376,14 +375,15 @@ class fuseTen extends Phaser.Scene {
         this.tilePool.push(moveTile.tileSprite);
         moveTile.tileSprite = null;
 
-        this.tempScore += newVal;
-        this.score += newVal;
-        this.scoreUpdate()
+        //this.tempScore += newVal;
+        //this.score += newVal;
+
         //  this.scoreText.setText(this.score)
 
 
       }
-      this.fuseTiles(targetHex, targetTile.value)
+      // this.fuseTiles(targetHex, targetTile.value)
+      var m = this.findChainMatches(matches[0])
     }
     // console.log(this.tilePool.length)
   }
@@ -393,59 +393,7 @@ class fuseTen extends Phaser.Scene {
 
 
 
-  checkMatches(hex, value) {
 
-    for (var i = 0; i < 6; i++) {
-      var newHex = hex_neighbor(hex, i);
-      if (this.inMap(newHex)) {
-        var tile = this.getHexObjectByHex(newHex)
-        if (tile.value == value && tile.occupied && !this.pointInArray(newHex) && tile.value != 12) {
-          // this.floodFill(newHex, value);
-          this.filled.push(newHex);
-        }
-      }
-    }
-    console.log(this.filled)
-
-    return this.filled.length
-
-
-  }
-
-  floodFill(hex, value) {
-    //hex just placed
-    //check each neighbor
-    // if it matches, check eack neighber of that one
-    if (!this.inMap(hex)) {
-      return
-
-    }
-    var tile = this.getHexObjectByHex(hex)
-
-    if (tile.value == value && tile.occupied && !this.pointInArray(hex)) {
-
-      this.filled.push(hex)
-      for (var i = 0; i < 6; i++) {
-
-        var newHex = hex_neighbor(hex, i);
-
-
-        // this.floodFill(newHex, value);
-
-        tile.image.setTint(0x00ff00)
-
-      }
-
-
-
-
-    }
-
-
-
-
-
-  }
   checkSixes() {
     var sixArray = [];
     for (var i = 0; i < this.hexagons.length; i++) {
