@@ -13,7 +13,7 @@ window.onload = function () {
       height: 1640
     },
 
-    scene: [preloadGame, startGame, playGame, plusPlus, play2048, zNumbers, nonogram, nonoOptions, tenPair, mineSweeper, minesweeperOptions, twoFourEight, fuseTen, gridPlus, Slide, help, UI]
+    scene: [preloadGame, startGame, playGame, plusPlus, play2048, zNumbers, nonogram, nonoOptions, tenPair, mineSweeper, minesweeperOptions, twoFourEight, fuseTen, gridPlus, Slide, Othello, help, UI]
   }
   game = new Phaser.Game(gameConfig);
   window.focus();

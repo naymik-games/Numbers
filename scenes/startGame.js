@@ -102,6 +102,13 @@ class startGame extends Phaser.Scene {
       this.clickHandler(9)
     }, this);
 
+    var startOthello = this.add.bitmapText(game.config.width / 2 - 50, 1375, 'topaz', 'Othello', 50).setOrigin(0, .5).setTint(0x000000);
+    startOthello.setInteractive();
+    startOthello.on('pointerdown', function () {
+      this.clickHandler(10)
+    }, this);
+
+
     var remove = this.add.bitmapText(game.config.width / 2, 1600, 'topaz', 'REMOVE DATA', 50).setOrigin(.5).setTint(0x000000).setInteractive();
     remove.on('pointerdown', function () {
       localStorage.removeItem('numbersData');

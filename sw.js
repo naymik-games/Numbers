@@ -24,6 +24,7 @@ var filesToCache = [
   '/scenes/games/twoFourEight.js',
   '/scenes/games/zNumbers.js',
   '/scenes/games/slide.js',
+  '/scenes/games/othello.js',
 
   '/assets/fonts/topaz.png',
   '/assets/fonts/topaz.xml',
@@ -60,6 +61,8 @@ var filesToCache = [
   '/assets/sprites/tile.png',
   '/assets/sprites/tiles.png',
   '/assets/sprites/rover.png',
+  '/assets/sprites/pieces.png',
+  '/assets/sprites/board.png',
 
   //'https://cdn.jsdelivr.net/gh/photonstorm/phaser@3.10.1/dist/phaser.min.js'
 ];

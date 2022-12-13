@@ -23,6 +23,7 @@ class Slide extends Phaser.Scene {
     this.numberRange = [1, 4]
     this.chainRange = [1, 4]
     this.chainSlots = []
+    this.levelGoal = 200
     this.cameras.main.setBackgroundColor(0x333333);
     this.dots = this.add.group({
 
@@ -39,9 +40,18 @@ class Slide extends Phaser.Scene {
     this.generateChain()
 
     this.score = this.add.bitmapText(50, 50, 'topaz', this.board.score, 80).setOrigin(0, .5).setTint(0xfafafa);
-    this.scoreProgress = this.add.bitmapText(675, 50, 'topaz', this.board.scoreProgress, 80).setOrigin(0, .5).setTint(0xfafafa);
+    // this.scoreProgress = this.add.bitmapText(675, 50, 'topaz', this.board.scoreProgress, 80).setOrigin(0, .5).setTint(0xfafafa);
     this.matchCount = this.add.bitmapText(450, 50, 'topaz', this.board.matchCount, 80).setOrigin(0, .5).setTint(0xfafafa)
+    this.matchIcon = this.add.image(400, 50, 'num_tiles', 33).setTint(slideColors[0]).setScale(.5).setAlpha(1).setInteractive()
 
+
+    var progressBox = this.add.graphics();
+    this.progressBar = this.add.graphics();
+    progressBox.fillStyle(slideColors[0], 0.8);
+    progressBox.fillRect(625, 30, 250, 50);
+    /*  this.progressBar.clear();
+     this.progressBar.fillStyle(slideColors[1], 1);
+     this.progressBar.fillRect(635, 45, 230 * 0, 30); */
 
     this.removeButton = this.add.image(75, 1400, 'num_tiles', 32).setTint(slideColors[0]).setScale(.75).setAlpha(1).setInteractive()
     this.removeButton.on('pointerdown', function () {
@@ -49,10 +59,15 @@ class Slide extends Phaser.Scene {
         this.removeButton.setTint(slideColors[0])
         this.remove = false
       } else {
-        this.removeButton.clearTint()
-        this.remove = true
+        if (this.board.matchCount >= 15) {
+          this.removeButton.clearTint()
+          this.remove = true
+        } else {
+          return
+        }
+
       }
-      this.remove = true
+
     }, this)
 
     this.input.on("pointerdown", this.dotSelect, this);
@@ -71,6 +86,9 @@ class Slide extends Phaser.Scene {
       this.board.clearMatch2(this.board.dots[col][row].coordinates)
       this.remove = false
       this.removeButton.setTint(slideColors[0])
+      this.board.matchCount -= 15
+      this.matchCount.setText(this.board.matchCount)
+      this.tweenMatch(0)
       return
     }
     if (this.remove) { return }
@@ -147,8 +165,12 @@ class Slide extends Phaser.Scene {
       this.board.resetBoardKeep()
       var matches = this.board.findChainMatches()
       console.log(matches)
+      if (matches) {
+        this.tweenMatch(1)
+      }
       this.generateChain()
       this.updateStats()
+
     } else {
       console.log('No!')
       this.board.resetBoard()
@@ -221,16 +243,29 @@ class Slide extends Phaser.Scene {
   updateStats() {
     this.score.setText(this.board.score)
     this.matchCount.setText(this.board.matchCount)
-    this.scoreProgress.setText(this.board.scoreProgress)
-    if (this.board.scoreProgress >= 100) {
+
+    if (this.board.scoreProgress >= this.levelGoal) {
       this.board.scoreProgress = 0
       this.nextLevel()
     }
+    //this.scoreProgress.setText(this.board.scoreProgress)
+    this.progressBar.clear();
+    this.progressBar.fillStyle(slideColors[1], 1);
+    this.progressBar.fillRect(635, 40, 230 * (this.board.scoreProgress / this.levelGoal), 30);
   }
   nextLevel() {
     this.numberRange[0]++
     this.numberRange[1]++
   }
+  tweenMatch(scale) {
+    var t = this.tweens.add({
+      targets: this.matchIcon,
+      scale: scale,
+      duration: 200,
+      yoyo: true
+    })
+  }
+
 }
 
 
