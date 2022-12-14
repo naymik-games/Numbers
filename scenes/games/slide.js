@@ -9,21 +9,24 @@ class Slide extends Phaser.Scene {
 
   }
   create() {
-    this.boardWidth = 5;
-    this.boardHeight = 6;
+    //7,8,120,100 - 5,6,150,130
+    this.boardWidth = 5
+    this.boardHeight = 6
     this.dotSize = 150
-    this.spriteSize = 135
-    this.board = [];
-    this.xOffset = (game.config.width - (this.dotSize * this.boardWidth)) / 2
-    this.numColors = 4
-    this.yOffset = 300
-    this.moveCount = 0;
-    this.moveLimit = 20;
-    this.startCount = 6
+    this.spriteSize = 130
+    this.startCount = 9
     this.numberRange = [1, 4]
     this.chainRange = [1, 4]
-    this.chainSlots = []
     this.levelGoal = 200
+
+    this.board = [];
+    this.xOffset = (game.config.width - (this.dotSize * this.boardWidth)) / 2
+
+    this.yOffset = 300
+
+
+    this.chainSlots = []
+
     this.cameras.main.setBackgroundColor(0x333333);
     this.dots = this.add.group({
 

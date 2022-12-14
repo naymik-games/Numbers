@@ -18,9 +18,11 @@ class Othello extends Phaser.Scene {
     this.yOffset = 200
 
 
-    this.playerScore = this.add.bitmapText(50, 50, 'topaz', 'Player: 0', 80).setOrigin(0, .5).setTint(0xfafafa);
-    this.computerScore = this.add.bitmapText(450, 50, 'topaz', 'Computer: 0', 80).setOrigin(0, .5).setTint(0xfafafa);
+    this.playerScoreText = this.add.bitmapText(50, 50, 'topaz', 'Player: 0', 80).setOrigin(0, .5).setTint(0xfafafa);
+    this.computerScoreText = this.add.bitmapText(450, 50, 'topaz', 'Computer: 0', 80).setOrigin(0, .5).setTint(0xfafafa);
     this.statusText = this.add.bitmapText(50, 1500, 'topaz', 'Status', 60).setOrigin(0, .5).setTint(0xfafafa);
+    this.computerScore = 0;
+    this.playerScore = 0;
 
     this.initGrid()
     this.start = false
@@ -98,7 +100,7 @@ class Othello extends Phaser.Scene {
   }
   update() {
 
-    if (this.start) {
+    if (this.start && !this.end) {
       if (this.turn == this.computer) {
         this.statusText.setText('Computer\'s Turn...')
       } else {
@@ -112,6 +114,13 @@ class Othello extends Phaser.Scene {
     if (!this.getLegal()) {
       this.end = true;
       console.log('game over')
+      if (this.playerScore > this.computerScore) {
+        this.statusText.setText('Player Wins!')
+      } else if (this.playerScore < this.computerScore) {
+        this.statusText.setText('Computer Wins!')
+      } else {
+        this.statusText.setText('It\s a tie!')
+      }
       // this.getWinner();
     }
     this.countScore();
@@ -281,22 +290,22 @@ class Othello extends Phaser.Scene {
     return x >= 0 && y >= 0 && x < 8 && y < 8;
   }
   countScore() {
-    let computer = 0;
-    let player = 0;
+    this.computerScore = 0;
+    this.playerScore = 0;
 
     this.board.forEach((row, y) => {
       row.forEach((col, x) => {
         if (col == this.player) {
-          player++;
+          this.playerScore++;
         }
 
         else if (col == this.computer) {
-          computer++;
+          this.computerScore++;
         }
       });
     });
-    this.playerScore.setText('Player: ' + player)
-    this.computerScore.setText('Computer: ' + computer)
+    this.playerScoreText.setText('Player: ' + this.playerScore)
+    this.computerScoreText.setText('Computer: ' + this.computerScore)
     // console.log('Player: ' + player + ', Computer: ' + computer)
   }
 

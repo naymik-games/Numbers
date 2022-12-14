@@ -20,7 +20,7 @@ let hexH = imageH * scale;
 let hexSide = hexW / 2;
 //hexagon
 let depth = 2;
-let boardType = 'hex';
+let boardType = 'rhom';
 const sin60 = Math.sqrt(3) / 2;
 const cos60 = 1 / 2;
 const tan60 = Math.sqrt(3);
@@ -55,18 +55,21 @@ class fuseTen extends Phaser.Scene {
 
     } else if (boardType == 'triUp') {
       this.flat = Layout(layout_flat, Point(hexSide, hexSide), Point(150, 60));
-      var hexes = makeUpTriangularShape(5);
+      var hexes = makeUpTriangularShape(6);
 
     } else if (boardType == 'triDown') {
       this.flat = Layout(layout_flat, Point(hexSide, hexSide), Point(150, 350));
-      var hexes = makeDownTriangularShape(5);
+      var hexes = makeDownTriangularShape(6);
     } else if (boardType == 'rhom') {
-      this.flat = Layout(layout_flat, Point(hexSide, hexSide), Point(60, 300));
-      var hexes = makeRhombusShape(4, 4)
+      this.flat = Layout(layout_flat, Point(hexSide, hexSide), Point(150, 300));
+      var hexes = makeRhombusShape(qTotal, 6)
 
     }
 
     // 
+    this.chainSlots = []
+    this.numberRange = [1, 4]
+    this.chainRange = [1, 2]
 
     this.drawGrid(hexes);
 
@@ -74,107 +77,103 @@ class fuseTen extends Phaser.Scene {
     var coo = hex_to_pixel(this.flat, Hex(0, 0, 0))
 
     this.tilePool = []
-
-    this.slot = this.add.image(450, 1375, "hex", 0).setScale(tileScale + .2).setTint(0xbbada0);
-    this.slotNext = this.add.image(150, 1375, "hex", 0).setScale(1.2).setTint(0xbbada0);
+    this.addOccupied(4)
+    // this.slot = this.add.image(450, 1375, "hex", 0).setScale(tileScale + .2).setTint(0xbbada0);
+    //  this.slotNext = this.add.image(150, 1375, "hex", 0).setScale(1.2).setTint(0xbbada0);
 
     this.tileGroup = this.add.group();
-    // var num = Phaser.Math.Between(1, this.max);
-    // var tile = this.add.image(this.slotNext.x,this.slotNext.y, "hex", num).setScale(tileScale).setInteractive();
-    //  tile.value = num
-    //var text1 = this.add.bitmapText(this.slot.x, this.slot.y, 'topaz', tile.value, 90).setOrigin(.5).setTint(0xc76210);
-    //tile.text = text1
-    // this.input.setDraggable(tile);
-    //  tile.disableInteractive()
-    // this.tilePool.unshift(tile)
-    this.addNext();
-    this.updateTile();
-    // var next = this.tilePool.pop()
-    //  next.setPosition(this.slot.x, this.slot.y)
-    //  next.setInteractive()
-    //  this.player = this.add.image(coo.x, coo.y, "hex").setScale(tileScale).setTint(0x00ff00);
-    //  this.player.hex = Hex(0,0,0)
-    // console.log(this.player.hex)
 
-    // var testHex = this.add.image(250, 1250, "hexmult",1).setScale(tileScale).setTint(0xeee4da).setInteractive();
-    //  this.input.setDraggable(testHex);
-    // var hx = 450 + hexW * 3/4;
-    // var hy = 1250 + hexH / 2;
-    // var ncoo = this.getNXY(testHex.x, testHex.y, 5);
-    // var testHex2 = this.add.image(ncoo.x, ncoo.y, "hex").setScale(tileScale).setTint(0xcdc1b4);
-    // var moveContainer = this.add.container(450,1250);
-    //moveContainer.add([testHex, testHex2])
-    //moveContainer.setSize(400, 400);
 
-    //moveContainer.setInteractive();
 
-    // this.input.setDraggable(moveContainer)
-    /*   this.oneHex = this.add.image(150, 1500, "hex").setScale(tileScale).setTint(0xeee4da).setInteractive();
-    var text1 = this.add.bitmapText(this.oneHex.x, this.oneHex.y, 'topaz', '5', 40).setOrigin(.5).setTint(0xc76210);
-    this.oneHex.text = text1
-    this.oneHex.value = 5;
-    this.input.setDraggable(this.oneHex);
-    this.twoHex = this.add.image(750, 1500, "hex").setScale(tileScale).setTint(0xeee4da).setInteractive();
-    var text2 = this.add.bitmapText(this.twoHex.x, this.twoHex.y, 'topaz', '2', 40).setOrigin(.5).setTint(0xc76210);
-    this.twoHex.text = text2
-    this.twoHex.value = 2;
-    this.input.setDraggable(this.twoHex);
-*/
+
+
+    for (var i = 0; i < 5; i++) {
+      let xpos = 100 + i * hexW * .75;
+      if (i % 2 == 0) {
+        var yPlus = hexH * .5
+      } else {
+        var yPlus = 0
+      }
+      let ypos = 1400 + yPlus
+      var slot = this.add.image(xpos, ypos, 'hex', 0).setScale(scale).setAlpha(1)
+      this.chainSlots.push(slot)
+    }
+    this.generateChain()
+
 
     this.scoreText = this.add.bitmapText(750, 1450, 'topaz', this.score, 90).setOrigin(.5).setTint(0xc76210);
 
 
 
 
-    this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
-      gameObject.x = dragX;
-      gameObject.y = dragY;
-      //gameObject.text.x = dragX;
-      //gameObject.text.y = dragY;
-    }, this)
-    this.input.on('dragenter', function (pointer, gameObject, target) {
-      target.setAlpha(.2)
-      //tatget.setTint(0xff0000)
-
-      var hex = pixel_to_hex(this.flat, Point(target.x, target.y));
-
-      //this.drawHex(hex)
-    }, this)
-
-    this.input.on('dragleave', function (pointer, gameObject, target) {
-      target.setAlpha(1)
-
-
-    })
-    this.input.on('drop', function (pointer, gameObject, target) {
-      this.dropTile(gameObject, target)
-      target.setAlpha(1)
-    }, this)
-    this.input.on('dragend', function (pointer, gameObject, dropped) {
-      if (!dropped) {
-        //console.log(gameObject.input.dragStartX)
-        gameObject.x = gameObject.input.dragStartX;
-        gameObject.y = gameObject.input.dragStartY;
-        // target.setAlpha(1)
-        // gameObject.text.x = gameObject.input.dragStartX;
-        // gameObject.text.y = gameObject.input.dragStartY;
-      }
-
-
-
-    })
-
+    /*  this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
+       gameObject.x = dragX;
+       gameObject.y = dragY;
+       //gameObject.text.x = dragX;
+       //gameObject.text.y = dragY;
+     }, this)
+     this.input.on('dragenter', function (pointer, gameObject, target) {
+       target.setAlpha(.2)
+       //tatget.setTint(0xff0000)
+ 
+       var hex = pixel_to_hex(this.flat, Point(target.x, target.y));
+ 
+       //this.drawHex(hex)
+     }, this)
+ 
+     this.input.on('dragleave', function (pointer, gameObject, target) {
+       target.setAlpha(1)
+ 
+ 
+     })
+     this.input.on('drop', function (pointer, gameObject, target) {
+       this.dropTile(gameObject, target)
+       target.setAlpha(1)
+     }, this)
+     this.input.on('dragend', function (pointer, gameObject, dropped) {
+       if (!dropped) {
+         //console.log(gameObject.input.dragStartX)
+         gameObject.x = gameObject.input.dragStartX;
+         gameObject.y = gameObject.input.dragStartY;
+         // target.setAlpha(1)
+         // gameObject.text.x = gameObject.input.dragStartX;
+         // gameObject.text.y = gameObject.input.dragStartY;
+       }
+ 
+ 
+ 
+     })
+  */
 
     this.graphics = this.add.graphics();
-    //this.input.on("pointerdown", this.hexSelect, this);
+    this.input.on("pointerdown", this.hexSelect, this);
     //  this.input.on("pointerup", this.test, this);
-    /*this.input.on("pointermove", this.drawPath, this);
-    this.input.on("pointerup", this.removeGems, this);
-   */
+    this.input.on("pointermove", this.drawPath, this);
+    this.input.on("pointerup", this.endPath, this);
+
     //this.check = this.add.image(725, 1000, 'check').setScale(.7);
   }
   update() {
 
+  }
+  addOccupied(count) {
+    var placedB = 0
+
+
+
+    while (placedB < count) {
+      var ranInd = Phaser.Math.Between(0, this.hexagons.length - 1)
+      var dot = this.getHexObjectByHex(this.hexagons[ranInd].hex)
+      if (dot.value == 0) {
+        //var ranCol = Phaser.Math.Between(1, slideColors.length - 1)
+        //this.board.dots[randX][randY].image.setTint(slideColors[ranCol])
+        var ranVal = Phaser.Math.Between(this.numberRange[0], this.numberRange[1])
+        dot.image.setFrame(ranVal)
+        dot.value = ranVal
+        dot.selectable = false
+        placedB++
+      }
+    }
   }
   scoreUpdate() {
 
@@ -198,46 +197,8 @@ class fuseTen extends Phaser.Scene {
       // this.damageEmit(this.currentLevelText.x, this.currentLevelText.y, this.colors[this.Level])
     }
   }
-  updateTile() {
 
-    var tile = this.tile;
-    var tween = this.tweens.add({
-      targets: tile,
-      x: this.slot.x,
-      y: this.slot.y,
-      scale: tileScale,
-      duration: 200,
-      onCompleteScope: this,
-      onComplete: function () {
-        tile.setInteractive()
-        this.addNext();
-      }
-    })
-  }
-  addNext() {
-    if (this.tilePool.length > 0) {
-      this.tile = this.tilePool.shift()
-      this.tile.setScale(1);
-      this.tile.setVisible(true);
-      this.tile.setPosition(this.slotNext.x, this.slotNext.y)
-    } else {
-      this.tile = this.tileGroup.create(this.slotNext.x, this.slotNext.y, "hex", 0);
-    }
-    //this.tile = this.tilePool.length > 0 ? this.tilePool.shift() : this.tileGroup.create(this.slotNext.x, this.slotNext.y, "hex", 0);
 
-    this.children.bringToTop(this.tile)
-    var num = Phaser.Math.Between(this.range[0], this.range[1]);
-    // var tile = this.add.image(this.slotNext.x,this.slotNext.y, "hex", num).setScale(tileScale).setInteractive();
-    this.tile.setInteractive();
-    this.tile.value = num;
-    this.tile.setFrame(num);
-
-    //var text1 = this.add.bitmapText(this.slot.x, this.slot.y, 'topaz', tile.value, 90).setOrigin(.5).setTint(0xc76210);
-    //tile.text = text1
-    this.input.setDraggable(this.tile);
-    this.tile.disableInteractive()
-
-  }
   getNXY(x, y, dir) {
     if (dir == 0) {
       return { x: x + hexW * 3 / 4, y: y + hexH / 2 }
@@ -256,7 +217,7 @@ class fuseTen extends Phaser.Scene {
 
 
 
-  dropTile(gameObject, target) {
+  /* dropTile(gameObject, target) {
 
 
     //set xy to match target
@@ -282,7 +243,7 @@ class fuseTen extends Phaser.Scene {
     var matches = this.findChainMatches(hex)
 
 
-  }
+  } */
   findChainMatches(hex) {
 
     var testMatch = []
@@ -360,20 +321,22 @@ class fuseTen extends Phaser.Scene {
       this.score += targetTile.value * matches.length;
       this.scoreUpdate()
       targetTile.value = newVal;
-      targetTile.tileSprite.setFrame(newVal);
+      targetTile.image.setFrame(newVal);
 
       for (var h = 1; h < matches.length; h++) {
         var moveTile = this.getHexObjectByHex(matches[h])
 
-        moveTile.tileSprite.setPosition(targetTile.image.x, targetTile.image.y)
+        //  moveTile.image.setPosition(targetTile.image.x, targetTile.image.y)
 
         moveTile.occupied = false;
 
-        moveTile.image.input.dropZone = true;
+        // moveTile.image.input.dropZone = true;
+        moveTile.selectable = true
         moveTile.value = 0;
-        moveTile.tileSprite.setVisible(false)
-        this.tilePool.push(moveTile.tileSprite);
-        moveTile.tileSprite = null;
+        moveTile.image.setFrame(0)
+        //moveTile.image.setVisible(false)
+        // this.tilePool.push(moveTile.image);
+        //    moveTile.image = null;
 
         //this.tempScore += newVal;
         //this.score += newVal;
@@ -462,11 +425,102 @@ class fuseTen extends Phaser.Scene {
     })
   }
   hexSelect(e) {
+    this.selected = []
+    this.dragging = true
     var hex = pixel_to_hex(this.flat, Point(e.x, e.y));
     if (!this.inMap(hex)) { return }
     var hexagon = this.getHexObjectByHex(hex);
-    hexagon.image.setAlpha(.6);
+    if (hexagon.selectable) {
+      hexagon.image.setFrame(this.chain[0]);
+      this.selected.push(hex)
+    }
+
   }
+  drawPath(e) {
+    if (!this.dragging) { return }
+    var hex = pixel_to_hex(this.flat, Point(e.x, e.y));
+    if (!this.inMap(hex)) { return }
+    var hexagon = this.getHexObjectByHex(hex);
+    if (this.isNeighbor(hex) && !this.inPath(hex) && this.movesLeft() && hexagon.selectable) {
+
+      this.selected.push(hex)
+      hexagon.image.setFrame(this.chain[this.selected.length - 1]);
+
+    } else if (this.selected.length > 1 && this.secondToLast(hex) && hexagon.selectable) {
+      console.log('backtrack')
+      this.getHexObjectByHex(this.lastSelected()).image.setFrame(0)
+      this.selected.pop()
+    }
+  }
+  endPath() {
+    if (!this.dragging) { return }
+    if (this.selected.length == this.chain.length) {
+      for (let i = 0; i < this.selected.length; i++) {
+        const dot = this.selected[i];
+        var hexagon = this.getHexObjectByHex(dot);
+        hexagon.value = this.chain[i];
+        hexagon.selectable = false
+        var matches = this.findChainMatches(dot)
+      }
+
+      this.generateChain()
+    } else {
+      for (let i = 0; i < this.selected.length; i++) {
+        const dot = this.selected[i];
+        var hexagon = this.getHexObjectByHex(dot);
+        hexagon.image.setFrame(0);
+      }
+    }
+    this.dragging = false
+  }
+  isNeighbor(dot) {
+    var d = hex_distance(dot, this.lastSelected())
+    if (d == 1) {
+      return true
+    } else {
+      return false
+    }
+  }
+  movesLeft() {
+    if (this.selected.length == this.chain.length) {
+      return false
+    }
+    return true
+  }
+  inPath(hex) {
+    let found = false;
+    this.selected.forEach(function (item) {
+      if (item.q == hex.q && item.r == hex.r && item.s == hex.s) {
+        found = true;
+      }
+    });
+    return found;
+  }
+
+  lastSelected() {
+    return this.selected[this.selected.length - 1]
+  }
+  secondToLast(dot) {
+    var secondToLastDot = this.selected[this.selected.length - 2]
+    return hex_equal(dot, secondToLastDot)
+  }
+  generateChain() {
+    this.chain = []
+    for (var i = 0; i < this.chainSlots.length; i++) {
+      this.chainSlots[i].setAlpha(0)
+    }
+    var newChainLength = Phaser.Math.Between(this.chainRange[0], this.chainRange[1])
+    for (var j = 0; j < newChainLength; j++) {
+      this.chain.push(Phaser.Math.Between(this.numberRange[0], this.numberRange[1]))
+    }
+    for (var i = 0; i < this.chain.length; i++) {
+      this.chainSlots[i].setAlpha(1)
+      this.chainSlots[i].setFrame(this.chain[i])
+    }
+  }
+
+
+
   drawGrid(hexes) {
 
 
@@ -483,7 +537,7 @@ class fuseTen extends Phaser.Scene {
       //this.cooText = this.add.bitmapText(center.x, center.y, 'lato', coo, 30).setOrigin(.5).setTint(0x000000).setAlpha(1);
       this.makeGameGrid(hexes[i], image, value);
     }
-
+    console.log(this.hexagons)
   }
   makeGameGrid(hex, image, value) {
     var id = makeID(hex)
@@ -496,6 +550,7 @@ class fuseTen extends Phaser.Scene {
       id: id,
       occupied: false,
       blocked: false,
+      selectable: true
 
     }
     this.hexagons.push(hexObject)
