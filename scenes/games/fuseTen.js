@@ -20,7 +20,7 @@ let hexH = imageH * scale;
 let hexSide = hexW / 2;
 //hexagon
 let depth = 2;
-let boardType = 'rhom';
+let boardType = 'hex';
 const sin60 = Math.sqrt(3) / 2;
 const cos60 = 1 / 2;
 const tan60 = Math.sqrt(3);

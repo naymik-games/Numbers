@@ -29,8 +29,8 @@ class Othello extends Phaser.Scene {
     this.end = false;
 
     this.player = 1;
-    this.player1ColorLabel = this.add.bitmapText(450, 1100, 'topaz', 'Player 1', 50).setOrigin(.5).setTint(0xfafafa).setInteractive();
-    this.player1Color = this.add.bitmapText(450, 1200, 'topaz', 'BLACK', 50).setOrigin(.5).setTint(0xfafafa).setInteractive();
+    this.player1ColorLabel = this.add.bitmapText(225, 1100, 'topaz', 'Player 1', 50).setOrigin(.5).setTint(0xfafafa).setInteractive();
+    this.player1Color = this.add.bitmapText(225, 1200, 'topaz', 'BLACK', 50).setOrigin(.5).setTint(0xfafafa).setInteractive();
     this.player1Color.on('pointerdown', function () {
       if (this.player == 1) {
         this.player = 2
@@ -41,13 +41,30 @@ class Othello extends Phaser.Scene {
       }
     }, this)
 
-
+    this.opponent = 0
+    this.player2OpponentLabel = this.add.bitmapText(675, 1100, 'topaz', 'Player 2', 50).setOrigin(.5).setTint(0xfafafa).setInteractive();
+    this.player2Opponent = this.add.bitmapText(675, 1200, 'topaz', 'COMPUTER', 50).setOrigin(.5).setTint(0xfafafa).setInteractive();
+    this.player2Opponent.on('pointerdown', function () {
+      if (this.opponent == 0) {
+        this.opponent = 1
+        this.player2Opponent.setText('HUMAN')
+      } else {
+        this.opponent = 0
+        this.player2Opponent.setText('COMPUTER')
+      }
+    }, this)
 
 
     this.startGame = this.add.bitmapText(450, 1300, 'topaz', 'START', 50).setOrigin(.5).setTint(0xfafafa).setInteractive();
     this.startGame.on('pointerdown', function () {
       this.player1Color.disableInteractive().setAlpha(0)
       this.player1ColorLabel.setAlpha(0)
+      this.player2Opponent.disableInteractive().setAlpha(0)
+      this.player2OpponentLabel.setAlpha(0)
+
+      if (this.opponent == 1) {
+        this.computerScoreText.setText('Player 2: 0')
+      }
       this.black = 1;
       this.white = 2;
       this.legal = 3;
@@ -102,9 +119,14 @@ class Othello extends Phaser.Scene {
 
     if (this.start && !this.end) {
       if (this.turn == this.computer) {
-        this.statusText.setText('Computer\'s Turn...')
+        if (this.opponent == 0) {
+          this.statusText.setText('Computer\'s Turn...')
+        } else {
+          this.statusText.setText('Player 2\'s Turn...')
+        }
+
       } else {
-        this.statusText.setText('Player\'s Turn...')
+        this.statusText.setText('Player 1\'s Turn...')
       }
     }
   }
@@ -115,9 +137,14 @@ class Othello extends Phaser.Scene {
       this.end = true;
       console.log('game over')
       if (this.playerScore > this.computerScore) {
-        this.statusText.setText('Player Wins!')
+        this.statusText.setText('Player 1 Wins!')
       } else if (this.playerScore < this.computerScore) {
-        this.statusText.setText('Computer Wins!')
+        if (this.opponent == 0) {
+          this.statusText.setText('Computer Wins!')
+        } else {
+          this.statusText.setText('Player 2 Wins!')
+        }
+
       } else {
         this.statusText.setText('It\s a tie!')
       }
@@ -130,7 +157,14 @@ class Othello extends Phaser.Scene {
     let row = Math.floor((pointer.y - this.yOffset) / this.dotSize);
     let col = Math.floor((pointer.x - this.xOffset) / this.dotSize);
     console.log('col ' + col + ', row ' + row)
-    this.playerMove(row, col)
+    if (this.turn == this.player) {
+      this.playerMove(row, col)
+    } else {
+      if (this.opponent == 1) {
+        this.humanOpponentMove(row, col)
+      }
+    }
+
     // if (!this.board.validCoordinates(col, row)) { return }
     //console.log(this.board.dots[col][row])
   }
@@ -142,9 +176,25 @@ class Othello extends Phaser.Scene {
     this.board[y][x] = this.player;
     this.replace(y, x);
 
+
     this.turn = this.computer;
     this.updateGame();
-    this.computerMove();
+    if (this.opponent == 0) {
+      this.computerMove();
+    }
+
+  }
+  humanOpponentMove(y, x) {
+    if (this.end) return;
+    if (this.turn != this.computer) return;
+    if (this.board[y][x] != this.legal) return;
+    console.log('computer human play')
+    this.board[y][x] = this.computer;
+    this.replace(y, x);
+
+    this.turn = this.player;
+    this.updateGame();
+    //this.computerMove();
   }
   computerMove() {
     if (this.end) return;
@@ -241,7 +291,7 @@ class Othello extends Phaser.Scene {
       });
     });
     console.log(this.turn)
-    if (this.turn == this.player) this.drawLegal();
+    if (this.turn == this.player || this.opponent == 1) this.drawLegal();
 
     return valid;
   }
@@ -305,7 +355,12 @@ class Othello extends Phaser.Scene {
       });
     });
     this.playerScoreText.setText('Player: ' + this.playerScore)
-    this.computerScoreText.setText('Computer: ' + this.computerScore)
+    if (this.opponent == 1) {
+      this.computerScoreText.setText('Player 2: ' + this.computerScore)
+    } else {
+      this.computerScoreText.setText('Computer: ' + this.computerScore)
+    }
+
     // console.log('Player: ' + player + ', Computer: ' + computer)
   }
 
